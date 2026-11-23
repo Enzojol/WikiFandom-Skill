@@ -1,0 +1,9 @@
+wiki: battlenations
+synced_at: null   # fill after `kb fetch battlenations`
+questions:
+  - {id: bn-001, kind: lookup,    q: "Which building trains the Heavy Gunner?", answer: TODO, source: TODO}
+  - {id: bn-002, kind: lookup,    q: "What is a unit's PvP value and how does it affect matchmaking?", answer: TODO, source: TODO}
+  - {id: bn-003, kind: compare,   q: "Compare the two cheapest vehicle units: cost, HP and armor.", answer: TODO, source: TODO}
+  - {id: bn-004, kind: aggregate, q: "List the 5 infantry units with the highest HP at max rank.", answer: TODO, source: TODO}
+  - {id: bn-005, kind: aggregate, q: "How many units can be trained at each building?", answer: TODO, source: TODO}
+  - {id: bn-006, kind: multi-hop, q: "Which units are strong against the unit that the Barracks unlocks first?", answer: TODO, source: TODO}
