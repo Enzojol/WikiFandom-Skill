@@ -1,0 +1,17 @@
+# Example profile. Copy to <wiki>.yaml (the KB name, e.g. battlenations.yaml or onepiece-fr.yaml).
+# Generate a real draft with:  fandom_kb.py profile-init <wiki>
+wiki: example
+sitename: Example Wiki
+templates:
+  Infobox Unit:            # exact template name as shown by `schema`
+    table: units           # SQL table name
+    drop: [image, caption] # fields to ignore
+    fields:
+      cost:   {type: number, rename: gold_cost}   # "1,200 Gold" -> 1200
+      hp:     {type: int, split: "/"}             # "40 / 46 / 52" -> hp_1, hp_2, hp_3
+      type:   {type: text}
+      traits: {type: list}                        # "Fast, Armored" -> JSON array
+  Upgrade:                 # a template used in page bodies gets a table only when listed here
+    table: building_upgrades
+    fields:
+      cost: {type: number}
