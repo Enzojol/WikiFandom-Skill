@@ -1,0 +1,8 @@
+{
+  "name": "fandom-kb",
+  "version": "0.1.0",
+  "description": "Turn any Fandom / MediaWiki wiki into a local knowledge base Claude can search and query with SQL.",
+  "author": { "name": "Enzo" },
+  "license": "MIT",
+  "keywords": ["fandom", "mediawiki", "wiki", "knowledge-base", "sqlite", "rag"]
+}

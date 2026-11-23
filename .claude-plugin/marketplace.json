@@ -1,0 +1,11 @@
+{
+  "name": "fandom-kb",
+  "owner": { "name": "Enzo" },
+  "plugins": [
+    {
+      "name": "fandom-kb",
+      "source": "./",
+      "description": "Turn any Fandom / MediaWiki wiki into a local knowledge base Claude can search and query with SQL."
+    }
+  ]
+}
