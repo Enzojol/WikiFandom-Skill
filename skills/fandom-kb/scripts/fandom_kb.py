@@ -8,7 +8,7 @@ One knowledge base per wiki, stored under $FANDOM_KB_DIR (default ~/.fandom-kb/<
     pages/<slug>.json    structured page: infoboxes, data templates, links, categories
     index.jsonl          one line per page
     aliases.json         redirect -> target
-    kb.sqlite            full-text search (FTS5) + one typed table per infobox template
+    kb.sqlite            full-text search (FTS5) + one table per infobox and recurring data template
     meta.json            site info, licence, sync state
 
 Commands: fetch, import, list, search, show, sql, schema, export, profile-init, build-db
@@ -51,6 +51,8 @@ USER_AGENT = f"fandom-kb/{VERSION} (+https://github.com/fandom-kb/fandom-kb; per
 DEFAULT_ROOT = Path(os.environ.get("FANDOM_KB_DIR", Path.home() / ".fandom-kb"))
 PROFILES_DIR = Path(__file__).resolve().parent.parent / "profiles"
 CONFIRM_THRESHOLD = 3000  # pages; above this `fetch` needs --yes
+AUTO_TABLE_MIN_PAGES = 2  # a body or nested data template used on this many pages gets its own SQL table
+RANK_SEPARATORS = ("/", ";", "·")  # "40 / 46 / 52", "70; 85; 105" → one column per rank via `split`
 
 
 def log(*a):
@@ -207,6 +209,9 @@ class Ctx:
     images: list = field(default_factory=list)
     infoboxes: list = field(default_factory=list)
     templates: list = field(default_factory=list)
+    nested: list = field(default_factory=list)   # data templates inside another template's parameter
+    parents: list = field(default_factory=list)  # stack of (template, idx, param) while rendering params
+    next_idx: int = 0                            # page-local id of each template instance
     seen_heading: bool = False
     depth: int = 0
 
@@ -287,14 +292,18 @@ def render_node(n, ctx: Ctx) -> str:
     return str(n)
 
 
-def template_fields(tpl, ctx: Ctx) -> tuple[dict, list]:
+def template_fields(tpl, ctx: Ctx, name: str = "", idx: int | None = None) -> tuple[dict, list]:
     named, positional = {}, []
     ctx.depth += 1
     try:
-        for p in tpl.params:
-            val = clean_ws(render(p.value, ctx))
+        for n, p in enumerate(tpl.params, 1):
+            key = clean_ws(str(p.name)).strip() if p.showkey else str(n)
+            ctx.parents.append((name, idx, key))
+            try:
+                val = clean_ws(render(p.value, ctx))
+            finally:
+                ctx.parents.pop()
             if p.showkey:
-                key = clean_ws(str(p.name)).strip()
                 if key:
                     named[key] = val
             elif val:
@@ -312,15 +321,21 @@ def render_template(tpl, ctx: Ctx) -> str:
         return ctx.title
     if SKIP_TEMPLATE.search(name):
         return ""
-    named, positional = template_fields(tpl, ctx)
+    idx = ctx.next_idx
+    ctx.next_idx += 1
+    named, positional = template_fields(tpl, ctx, name, idx)
     is_box = ctx.depth == 0 and named and (INFOBOX_HINT.search(name) or (not ctx.seen_heading and len(named) >= 4))
     if is_box:
-        ctx.infoboxes.append({"template": name, "fields": named})
+        ctx.infoboxes.append({"template": name, "fields": named, "idx": idx})
         return ""
     if len(named) >= 2 and ctx.depth == 0:
-        ctx.templates.append({"template": name, "fields": named, "positional": positional})
+        ctx.templates.append({"template": name, "fields": named, "positional": positional, "idx": idx})
         lines = [f"\n**{name}**"] + [f"- {k}: {v}" for k, v in named.items() if v] + [f"- {v}" for v in positional]
         return "\n".join(lines) + "\n"
+    if len(named) >= 2 and ctx.parents:
+        parent, parent_idx, param = ctx.parents[-1]
+        ctx.nested.append({"template": name, "fields": named, "positional": positional, "idx": idx,
+                           "parent_template": parent, "parent_idx": parent_idx, "parent_field": param})
     vals = positional + [f"{k}={v}" for k, v in named.items() if v]
     if not vals:
         return ""
@@ -425,6 +440,7 @@ def parse_wikitext(wikitext: str, title: str, ns: Namespaces | None = None) -> d
         "summary": re.sub(r"[*\[\]]", "", summary)[:400],
         "infoboxes": ctx.infoboxes,
         "templates": ctx.templates,
+        "nested": ctx.nested,
         "sections": sections,
         "markdown": body,
         "categories": list(dict.fromkeys(ctx.categories)),
@@ -573,9 +589,13 @@ class KB:
         self._slugs[s.lower()] = title
         return s
 
-    def save_page(self, title, pageid, revid, timestamp, wikitext, wiki: Wiki | None, ns: Namespaces):
+    def save_page(self, title, pageid, revid, timestamp, wikitext, wiki: Wiki | None, ns: Namespaces,
+                  categories: list | None = None):
+        """`categories`: the API's list, which includes categories added by templates (wikitext alone misses them)."""
         slug = self.slug_for(title)
         doc = parse_wikitext(wikitext, title, ns)
+        if categories:
+            doc["categories"] = list(dict.fromkeys(doc["categories"] + categories))
         url = wiki.page_url(title) if wiki else self.meta.get("base", "") + "/wiki/" + quote(title.replace(" ", "_"))
         doc.update(pageid=pageid, revid=revid, timestamp=timestamp, url=url, fetched=now_iso())
         (self.raw / f"{slug}.wiki").write_text(wikitext or "", encoding="utf-8")
@@ -640,9 +660,13 @@ class KB:
             CREATE TABLE links(src TEXT, dst TEXT);
             CREATE TABLE aliases(alias TEXT PRIMARY KEY, title TEXT);
             CREATE TABLE template_tables(template TEXT PRIMARY KEY, table_name TEXT, rows INTEGER, columns TEXT);
+            CREATE TABLE template_values(title TEXT, url TEXT, template TEXT, idx INTEGER, parent_template TEXT,
+                                         parent_idx INTEGER, field TEXT, value TEXT, num REAL);
             CREATE VIRTUAL TABLE pages_fts USING fts5(title, body, tokenize='unicode61 remove_diacritics 2');
         """)
         rows_by_tpl: dict[str, list] = {}
+        pages_by_tpl: dict[str, set] = {}
+        infobox_names: set = set()
         for t, e in self.index.items():
             md_path = self.pages / f"{e['slug']}.md"
             body = md_path.read_text(encoding="utf-8").split("\n---\n", 1)[-1] if md_path.exists() else ""
@@ -656,33 +680,47 @@ class KB:
             except FileNotFoundError:
                 continue
             con.executemany("INSERT INTO links VALUES(?,?)", [(t, l) for l in doc.get("links", [])])
-            for tpl in doc.get("infoboxes", []) + doc.get("templates", []):
+            infobox_names.update(tpl["template"] for tpl in doc.get("infoboxes", []))
+            for n, tpl in enumerate(doc.get("infoboxes", []) + doc.get("templates", []) + doc.get("nested", [])):
                 name = tpl["template"]
-                tp = tpl_profiles.get(name)
-                if tpl in doc.get("templates", []) and not tp:
-                    continue  # body data templates only get a table when a profile asks for it
-                rows_by_tpl.setdefault(name, []).append((t, e["url"], normalise_fields(tpl["fields"], tp or {})))
+                idx = tpl.get("idx", n)
+                parent = (tpl.get("parent_template"), tpl.get("parent_idx"), tpl.get("parent_field"))
+                con.executemany("INSERT INTO template_values VALUES(?,?,?,?,?,?,?,?,?)",
+                                [(t, e["url"], name, idx, parent[0], parent[1], k, v,
+                                  parse_number(v) if looks_numeric(v) else None) for k, v in tpl["fields"].items()])
+                pages_by_tpl.setdefault(name, set()).add(t)
+                fields = normalise_fields(tpl["fields"], tpl_profiles.get(name) or {})
+                rows_by_tpl.setdefault(name, []).append((t, e["url"], idx, parent, fields))
+        con.execute("CREATE INDEX template_values_tpl ON template_values(template, field)")
         con.executemany("INSERT OR IGNORE INTO aliases VALUES(?,?)", list(self.aliases.items()))
         summary = {}
-        used_names = {"pages", "categories", "links", "aliases", "template_tables", "pages_fts"}
+        used_names = {"pages", "categories", "links", "aliases", "template_tables", "template_values", "pages_fts"}
         for name, rows in rows_by_tpl.items():
+            # infoboxes always get a table; other data templates when a profile lists them or they recur across pages
+            if name not in infobox_names and name not in tpl_profiles and len(pages_by_tpl[name]) < AUTO_TABLE_MIN_PAGES:
+                continue
             tp = tpl_profiles.get(name, {}) or {}
             table = sql_ident(tp.get("table") or name)
             while table in used_names:
                 table += "_t"
             used_names.add(table)
+            nested = any(parent[0] is not None for *_, parent, _ in rows)
+            fixed = ["title", "url", "idx"] + (["parent_template", "parent_idx", "parent_field"] if nested else [])
             cols: list[str] = []
-            for _, _, f in rows:
+            for *_, f in rows:
                 for c in f:
-                    if c not in cols and c not in ("title", "url"):
+                    if c not in cols and c not in fixed:
                         cols.append(c)
             types = {}
             for c in cols:
-                vals = [f[c] for _, _, f in rows if f.get(c) not in (None, "")]
+                vals = [f[c] for *_, f in rows if f.get(c) not in (None, "")]
                 types[c] = "REAL" if vals and all(isinstance(v, (int, float)) for v in vals) else "TEXT"
-            con.execute(f'CREATE TABLE "{table}"(title TEXT, url TEXT' + "".join(f', "{c}" {types[c]}' for c in cols) + ")")
-            con.executemany(f'INSERT INTO "{table}" VALUES(' + ",".join("?" * (len(cols) + 2)) + ")",
-                            [(t, u, *[f.get(c) if f.get(c) != "" else None for c in cols]) for t, u, f in rows])
+            fixed_sql = "title TEXT, url TEXT, idx INTEGER" + (
+                ", parent_template TEXT, parent_idx INTEGER, parent_field TEXT" if nested else "")
+            con.execute(f'CREATE TABLE "{table}"({fixed_sql}' + "".join(f', "{c}" {types[c]}' for c in cols) + ")")
+            con.executemany(f'INSERT INTO "{table}" VALUES(' + ",".join("?" * (len(cols) + len(fixed))) + ")",
+                            [(t, u, idx, *(parent if nested else ()),
+                              *[f.get(c) if f.get(c) != "" else None for c in cols]) for t, u, idx, parent, f in rows])
             con.execute("INSERT INTO template_tables VALUES(?,?,?,?)",
                         (name, table, len(rows), json.dumps({c: types[c] for c in cols})))
             summary[name] = {"table": table, "rows": len(rows), "columns": len(cols)}
@@ -772,21 +810,26 @@ def sync(kb: KB, client, wiki: Wiki, scope: dict, yes: bool = False, force: bool
     for i in range(0, len(todo), 50):
         batch = todo[i:i + 50]
         cont: dict = {}
+        got: dict[str, dict] = {}  # title → {pageid, rev, categories}, merged across continuation responses
         while True:
-            data = client.get(action="query", titles="|".join(batch), prop="revisions",
-                              rvprop="content|ids|timestamp", rvslots="main", **cont)
+            data = client.get(action="query", titles="|".join(batch), prop="revisions|categories",
+                              rvprop="content|ids|timestamp", rvslots="main", clshow="!hidden", cllimit="max", **cont)
             for p in data.get("query", {}).get("pages", []) or []:
-                revs = p.get("revisions")
-                if not revs:
-                    continue
-                rev = revs[0]
-                text = (rev.get("slots", {}).get("main", {}) or {}).get("content", rev.get("content", ""))
-                kb.save_page(p["title"], p.get("pageid"), rev.get("revid"), rev.get("timestamp"), text, wiki, ns)
-                done += 1
+                g = got.setdefault(p["title"], {"pageid": p.get("pageid"), "rev": None, "categories": []})
+                if p.get("revisions"):
+                    g["rev"] = p["revisions"][0]
+                g["categories"] += [c["title"].split(":", 1)[-1] for c in p.get("categories", []) or []]
             if "continue" in data:
                 cont = data["continue"]
             else:
                 break
+        for title, g in got.items():
+            rev = g["rev"]
+            if not rev:
+                continue
+            text = (rev.get("slots", {}).get("main", {}) or {}).get("content", rev.get("content", ""))
+            kb.save_page(title, g["pageid"], rev.get("revid"), rev.get("timestamp"), text, wiki, ns, g["categories"])
+            done += 1
         log(f"  {done}/{len(todo)} saved")
         if done and done % 500 < 50:
             kb.flush()
@@ -937,16 +980,43 @@ def schema(kb: KB) -> dict:
             doc = kb.load_doc(e)
         except FileNotFoundError:
             continue
-        for kind in ("infoboxes", "templates"):
+        seen: set = set()
+        for kind, label in (("infoboxes", "infobox"), ("templates", "template"), ("nested", "nested")):
             for tpl in doc.get(kind, []):
-                s = stats.setdefault(tpl["template"], {"kind": kind[:-1] if kind == "templates" else "infobox",
-                                                       "pages": 0, "fields": {}, "examples": {}})
-                s["pages"] += 1
+                s = stats.setdefault(tpl["template"], {"kind": label, "pages": 0, "fields": {}, "examples": {}, "samples": {}})
+                if tpl["template"] not in seen:
+                    s["pages"] += 1
+                    seen.add(tpl["template"])
                 for k, v in tpl["fields"].items():
                     s["fields"][k] = s["fields"].get(k, 0) + 1
                     if v and k not in s["examples"]:
                         s["examples"][k] = v[:60]
+                    if v and len(s["samples"].setdefault(k, [])) < 50:
+                        s["samples"][k].append(v)
     return dict(sorted(stats.items(), key=lambda kv: -kv[1]["pages"]))
+
+
+def plural(word: str) -> str:
+    if word.endswith("s"):
+        return word
+    if word.endswith(("x", "ch", "sh", "z")):
+        return word + "es"
+    if re.search(r"[^aeiou]y$", word):
+        return word[:-1] + "ies"
+    return word + "s"
+
+
+def rank_separator(samples: list) -> str | None:
+    """Return the separator of per-rank values ('70; 85; 105') if most samples are such lists of numbers."""
+    for sep in RANK_SEPARATORS:
+        hits = 0
+        for v in samples:
+            parts = [x.strip() for x in v.split(sep)]
+            if len(parts) >= 2 and all(looks_numeric(x) for x in parts):
+                hits += 1
+        if samples and hits >= 0.8 * len(samples):
+            return sep
+    return None
 
 
 def profile_init(kb: KB, min_pages: int = 3) -> str:
@@ -961,11 +1031,12 @@ def profile_init(kb: KB, min_pages: int = 3) -> str:
         for k, n in sorted(s["fields"].items(), key=lambda kv: -kv[1]):
             ex = s["examples"].get(k, "")
             spec = {"type": "number" if looks_numeric(ex) else "text", "example": ex}
-            if re.search(r"\d\s*/\s*\d", ex):
-                spec.update(type="number", split="/")
+            sep = rank_separator(s["samples"].get(k, []))
+            if sep:
+                spec.update(type="number", split=sep)
             fields[k] = spec
         drop = [k for k in fields if re.search(r"image|caption|imagewidth|icon|^img", k, re.I)]
-        out["templates"][name] = {"table": sql_ident(re.sub(r"(?i)infobox|template", "", name).strip() or name) + "s",
+        out["templates"][name] = {"table": plural(sql_ident(re.sub(r"(?i)infobox|template", "", name).strip() or name)),
                                   "pages": s["pages"], "drop": drop, "fields": fields}
     if yaml:
         return yaml.safe_dump(out, allow_unicode=True, sort_keys=False, width=120)
@@ -1104,6 +1175,8 @@ def main(argv=None):
     elif a.cmd == "schema":
         kb = open_kb(root, a.wiki)
         sc = schema(kb)
+        for s_ in sc.values():
+            s_.pop("samples", None)  # only used to draft profiles; too long for the output
         tables = run_sql(kb, "SELECT template, table_name, rows, columns FROM template_tables ORDER BY rows DESC", 1000)[1]
         if a.json:
             print(json.dumps({"templates": sc, "sql_tables": [dict(zip(["template", "table", "rows", "columns"], t)) for t in tables]},
@@ -1113,7 +1186,8 @@ def main(argv=None):
             for t in tables:
                 cols = json.loads(t[3])
                 print(f"  {t[1]}  ({t[2]} rows, from {{{{{t[0]}}}}}): " + ", ".join(f"{c}:{ty[0]}" for c, ty in list(cols.items())[:25]))
-            print("  + pages, categories(title,category), links(src,dst), aliases(alias,title), pages_fts(title,body)\n")
+            print("  + pages, categories(title,category), links(src,dst), aliases(alias,title), pages_fts(title,body),\n"
+                  "    template_values(title,template,idx,parent_template,parent_idx,field,value,num): every template field\n")
             print("Templates:")
             for name, s in list(sc.items())[:30]:
                 top = sorted(s["fields"].items(), key=lambda kv: -kv[1])[:15]
@@ -1123,7 +1197,7 @@ def main(argv=None):
         rows, cols = [], []
         for e in kb.index.values():
             doc = kb.load_doc(e)
-            for tpl in doc.get("infoboxes", []) + doc.get("templates", []):
+            for tpl in doc.get("infoboxes", []) + doc.get("templates", []) + doc.get("nested", []):
                 if tpl["template"].lower() == a.template.lower():
                     rows.append({"title": e["title"], "url": e["url"], **tpl["fields"]})
                     cols += [k for k in tpl["fields"] if k not in cols]

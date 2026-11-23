@@ -67,7 +67,8 @@ def test_sync_incremental_and_queries():
         root = Path(d)
         res, client, wiki = _sync(root)
         assert res["pages"] == 3 and res["downloaded"] == 3
-        assert set(res["tables"]) == {"Infobox Unit", "Infobox Building"}
+        # infoboxes always; body/nested data templates once used on 2+ pages (Upgrade is on 1 page only)
+        assert set(res["tables"]) == {"Infobox Unit", "Infobox Building", "WeaponBox", "AttackBox", "UnitRanks"}
         kb = fk.KB(root, "samplewiki")
         assert kb.find("HG")["title"] == "Heavy Gunner" and kb.find("heavy gunner")
         assert kb.meta["license"]["text"] == "CC BY-SA"
@@ -105,6 +106,70 @@ def test_profile_split_ranks():
         cols, rows = fk.run_sql(kb, "SELECT title, gold_cost, hp_1, hp_6 FROM units ORDER BY hp_6 DESC")
         assert rows == [("Heavy Gunner", 1200, 40, 70), ("Raider", 2500, 30, 50)]
         assert "image" not in cols
+
+
+def test_nested_templates_are_extracted():
+    doc = fk.parse_wikitext(fk_page("Heavy Gunner"), "Heavy Gunner")
+    weapon = [t for t in doc["templates"] if t["template"] == "WeaponBox"][0]
+    attacks = [n for n in doc["nested"] if n["template"] == "AttackBox"]
+    assert [a["fields"]["name"] for a in attacks] == ["Burst", "Suppressive Fire"]
+    assert all(a["parent_idx"] == weapon["idx"] and a["parent_template"] == "WeaponBox" for a in attacks)
+    assert [a["parent_field"] for a in attacks] == ["attack1", "attack2"]
+    stun = [n for n in doc["nested"] if n["template"] == "Stun"][0]
+    assert stun["parent_idx"] == attacks[1]["idx"] and stun["fields"] == {"chance": "25", "duration": "1"}
+    assert "[AttackBox: name=Burst" in doc["markdown"]  # still readable inline
+
+
+def test_data_templates_queryable_without_profile():
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root)
+        kb = fk.KB(root, "samplewiki")
+        cols, rows = fk.run_sql(kb, "SELECT title, maxdmg FROM attackbox ORDER BY maxdmg DESC LIMIT 1")
+        assert rows == [("Raider", 24)]
+        # nested rows join back to their parent template instance
+        cols, rows = fk.run_sql(kb, """SELECT a.name, w.slot, a.parent_field FROM attackbox a
+            JOIN weaponbox w ON w.title = a.title AND w.idx = a.parent_idx
+            WHERE a.title = 'Heavy Gunner' ORDER BY a.idx""")
+        assert rows == [("Burst", "primary", "attack1"), ("Suppressive Fire", "primary", "attack2")]
+        # every template field, any template, in one long table (Upgrade has no wide table)
+        cols, rows = fk.run_sql(kb, """SELECT value, num FROM template_values
+            WHERE title = 'Barracks' AND template = 'Upgrade' AND field = 'cost' ORDER BY idx""")
+        assert rows == [("500", 500), ("2,000", 2000)]
+        cols, rows = fk.run_sql(kb, "SELECT value FROM template_values WHERE template = 'Stun' AND field = 'chance'")
+        assert rows == [("25",)]
+
+
+def test_categories_from_api():
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root)
+        kb = fk.KB(root, "samplewiki")
+        assert kb.index["Raider"]["categories"] == ["Units", "Vehicles", "Fast units"]
+        assert "Pages with broken file links" not in kb.index["Heavy Gunner"]["categories"]
+        assert kb.load_doc(kb.index["Heavy Gunner"])["categories"] == ["Units", "Infantry", "Tier 2"]
+        assert 'categories: ["Units", "Vehicles", "Fast units"]' in (kb.dir / "pages" / "Raider.md").read_text()
+        cols, rows = fk.run_sql(kb, "SELECT title FROM categories WHERE category = 'Tier 2'")
+        assert rows == [("Heavy Gunner",)]
+
+
+def test_profile_init_detects_semicolon_ranks():
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root)
+        kb = fk.KB(root, "samplewiki")
+        draft = fk.yaml.safe_load(fk.profile_init(kb, min_pages=2))
+        ranks = draft["templates"]["UnitRanks"]["fields"]
+        assert ranks["hp"]["split"] == ";" and ranks["hp"]["type"] == "number"
+        assert "split" not in ranks["sp2"] and ranks["sp2"]["type"] == "number"
+        assert draft["templates"]["Infobox Unit"]["fields"]["hp"]["split"] == "/"
+        kb.build_db(draft)
+        cols, rows = fk.run_sql(kb, "SELECT title, hp_1, hp_6 FROM unitranks ORDER BY hp_6 DESC")
+        assert rows == [("Heavy Gunner", 40, 70), ("Raider", 30, 50)]
+
+
+def fk_page(title):
+    return PAGES[title]
 
 
 def test_category_scope():

@@ -23,6 +23,33 @@ __NOTOC__
 |-
 | Suppressive Fire || 8-10 || 2-4
 |}
+<tabber>
+Machine Gun=
+{{WeaponBox
+| slot    = primary
+| ammo    = 4
+| attack1 =
+{{AttackBox
+| name       = Burst
+| damagetype = Piercing
+| mindmg     = 12
+| maxdmg     = 18
+}}
+| attack2 =
+{{AttackBox
+| name       = Suppressive Fire
+| damagetype = Piercing
+| mindmg     = 8
+| maxdmg     = 10
+| effects    = {{Stun|chance=25|duration=1}}
+}}
+}}
+</tabber>
+{{UnitRanks
+| hp    = 40; 46; 52; 58; 64; 70
+| armor = 0; 0; 5; 5; 10; 10
+| sp2   = 1,500
+}}
 
 == Strategy ==
 * Strong against [[Raider|raiders]].
@@ -51,6 +78,17 @@ Rank 1=Unlocked at level 8.
 |-|
 Rank 6=Requires 3 [[Medals]].
 </tabber>
+== Stats ==
+{{WeaponBox
+| slot    = primary
+| ammo    = 6
+| attack1 = {{AttackBox|name=Ram|damagetype=Crushing|mindmg=20|maxdmg=24}}
+}}
+{{UnitRanks
+| hp    = 30; 34; 38; 42; 46; 50
+| armor = 20; 22; 24; 26; 28; 30
+| sp2   = 2,000
+}}
 [[Category:Units]]
 [[Category:Vehicles]]
 """,
@@ -68,6 +106,9 @@ The '''Barracks''' trains [[Heavy Gunner]]s and other infantry.
 """,
 }
 REDIRECTS = {"HG": "Heavy Gunner", "Raiders": "Raider"}
+# Categories that only the API knows about (added by templates), and hidden maintenance ones
+API_CATEGORIES = {"Raider": ["Fast units"], "Heavy Gunner": ["Tier 2"]}
+HIDDEN_CATEGORIES = {"Heavy Gunner": ["Pages with broken file links"]}
 
 
 class FakeClient:
@@ -86,6 +127,13 @@ class FakeClient:
             p["revisions"] = [{"revid": self.revs[t], "timestamp": "2026-01-01T00:00:00Z",
                                "slots": {"main": {"content": self.pages[t]}}}]
         return p
+
+    def _categories(self, t, hidden_ok):
+        import re
+        cats = re.findall(r"\[\[Category:([^\]|]+)", self.pages[t]) + API_CATEGORIES.get(t, [])
+        if hidden_ok:
+            cats += HIDDEN_CATEGORIES.get(t, [])
+        return [{"ns": 14, "title": f"Category:{c}"} for c in cats]
 
     def get(self, **q):
         self.calls += 1
@@ -108,11 +156,21 @@ class FakeClient:
             req = q["titles"].split("|")
             redir = [{"from": t, "to": self.redirects[t]} for t in req if t in self.redirects]
             req = [self.redirects.get(t, t) for t in req]
-            content = q.get("prop") == "revisions"
+            props = (q.get("prop") or "").split("|")
+            content = "revisions" in props
             if content:
                 self.content_requests += 1
+            if content and "categories" in props and "clcontinue" in q:
+                # continuation: like MediaWiki, the finished revisions module is not repeated
+                hidden_ok = "!hidden" not in (q.get("clshow") or "")
+                pages = [{"pageid": titles.index(t) + 1, "ns": 0, "title": t, "categories": self._categories(t, hidden_ok)}
+                         for t in req if t in self.pages]
+                return {"query": {"pages": pages}}
             pages = [self._page(t, titles.index(t), content) if t in self.pages else {"title": t, "missing": True} for t in req]
-            return {"query": {"pages": pages, "redirects": redir}}
+            out = {"query": {"pages": pages, "redirects": redir}}
+            if content and "categories" in props:
+                out["continue"] = {"clcontinue": "1|x", "continue": "||"}
+            return out
         raise AssertionError(f"unexpected query {q}")
 
     def query_all(self, **q):

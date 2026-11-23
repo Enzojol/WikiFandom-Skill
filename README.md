@@ -1,6 +1,6 @@
 # fandom-kb
 
-**Give Claude a real knowledge base for any wiki.** `fandom-kb` turns a Fandom (or any MediaWiki) wiki into a local knowledge base, one per wiki: clean Markdown, structured JSON and a SQLite database where every infobox becomes a typed table.
+**Give Claude a real knowledge base for any wiki.** `fandom-kb` turns a Fandom (or any MediaWiki) wiki into a local knowledge base, one per wiki: clean Markdown, structured JSON and a SQLite database where every infobox and recurring data template (stats, costs, attacks, even when nested) becomes a table.
 
 So instead of "let me search the web…", Claude can answer:
 
@@ -19,7 +19,8 @@ WHERE type = 'Infantry' AND gold_cost < 2000 ORDER BY hp_6 DESC LIMIT 5;
 |---|---|---|
 | "What does X do?" | ✅ | ✅ full-text search (FTS5/BM25), redirects and aliases resolved |
 | "Rank / compare / filter 200 units" | ❌ the model guesses from chunks | ✅ SQL over typed infobox tables |
-| Per-rank stats `40 / 46 / 52` | ❌ opaque strings | ✅ `hp_1, hp_2, hp_3` via profiles |
+| Per-rank stats `40 / 46 / 52` or `70; 85; 105` | ❌ opaque strings | ✅ `hp_1, hp_2, hp_3` via profiles |
+| Attacks nested in weapon templates | ❌ flattened text | ✅ child rows linked to their parent (`parent_idx`) |
 | Re-sync | re-scrape everything | ✅ incremental: only changed revisions |
 | Wiki quirks (tabbers, navboxes, refs, tables) | noise | ✅ handled by a real wikitext parser |
 
@@ -65,7 +66,8 @@ Other wikis: `kb fetch onepiece --lang fr`, `kb fetch https://terraria.wiki.gg/w
   pages/*.md       readable Markdown with front matter (source URL, licence)
   pages/*.json     infoboxes, data templates, sections, links, categories
   profile.yaml     optional local profile
-  kb.sqlite        pages, pages_fts, categories, links, aliases, one table per infobox
+  kb.sqlite        pages, pages_fts, categories, links, aliases, template_values (every field),
+                   one table per infobox and per recurring data template
 ```
 
 ## Profiles: the part that compounds
