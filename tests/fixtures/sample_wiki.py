@@ -1,0 +1,135 @@
+"""Synthetic pages in the style of a game wiki (made-up values, not real Battle Nations data)."""
+
+PAGES = {
+    "Heavy Gunner": """{{Infobox Unit
+|name = Heavy Gunner
+|image = HeavyGunner.png
+|type = [[Infantry]]
+|building = [[Barracks]]
+|level = 12
+|cost = 1,200 [[Gold]]
+|hp = 40 / 46 / 52 / 58 / 64 / 70
+|armor = 0
+|defense = 10
+|dodge = 5%
+}}
+The '''Heavy Gunner''' is a sturdy [[Infantry]] unit trained at the [[Barracks]].<ref>Patch notes</ref>
+__NOTOC__
+== Attacks ==
+{| class="wikitable"
+! Attack !! Damage !! Range
+|-
+| Machine Gun || 12-18 || 1-3
+|-
+| Suppressive Fire || 8-10 || 2-4
+|}
+
+== Strategy ==
+* Strong against [[Raider|raiders]].
+** Keep him in the front row.
+* Weak against [[Artillery]].
+
+{{Navbox Units}}
+[[Category:Units]]
+[[Category:Infantry]]
+[[File:HeavyGunner_full.png|thumb]]
+""",
+    "Raider": """{{Infobox Unit
+|name = Raider
+|type = Vehicle
+|building = [[Vehicle Factory]]
+|level = 8
+|cost = 2.5k
+|hp = 30/34/38/42/46/50
+|armor = 20
+|defense = 5
+|dodge = 15%
+}}
+The '''Raider''' is a fast vehicle. See also [[Heavy Gunner]].
+<tabber>
+Rank 1=Unlocked at level 8.
+|-|
+Rank 6=Requires 3 [[Medals]].
+</tabber>
+[[Category:Units]]
+[[Category:Vehicles]]
+""",
+    "Barracks": """{{Infobox Building
+|name = Barracks
+|size = 3x3
+|cost = 500
+|population = 2
+}}
+The '''Barracks''' trains [[Heavy Gunner]]s and other infantry.
+== Upgrades ==
+{{Upgrade|level=1|cost=500|time=1h}}
+{{Upgrade|level=2|cost=2,000|time=4h}}
+[[Category:Buildings]]
+""",
+}
+REDIRECTS = {"HG": "Heavy Gunner", "Raiders": "Raider"}
+
+
+class FakeClient:
+    """Answers the handful of MediaWiki API calls fandom_kb makes."""
+
+    def __init__(self, pages=None, redirects=None):
+        self.pages = dict(pages or PAGES)
+        self.redirects = dict(redirects or REDIRECTS)
+        self.revs = {t: 100 + i for i, t in enumerate(sorted(self.pages))}
+        self.calls = 0
+        self.content_requests = 0
+
+    def _page(self, t, i, content=False):
+        p = {"pageid": i + 1, "ns": 0, "title": t, "lastrevid": self.revs[t]}
+        if content:
+            p["revisions"] = [{"revid": self.revs[t], "timestamp": "2026-01-01T00:00:00Z",
+                               "slots": {"main": {"content": self.pages[t]}}}]
+        return p
+
+    def get(self, **q):
+        self.calls += 1
+        if q.get("meta") == "siteinfo":
+            return {"query": {"general": {"sitename": "Sample Wiki", "lang": "en", "generator": "MediaWiki 1.39"},
+                              "statistics": {"articles": len(self.pages)},
+                              "rightsinfo": {"text": "CC BY-SA", "url": "https://creativecommons.org/licenses/by-sa/3.0/"},
+                              "namespaces": {"14": {"id": 14, "name": "Category", "canonical": "Category"}},
+                              "namespacealiases": []}}
+        titles = sorted(self.pages)
+        if q.get("generator") == "allpages":
+            if q.get("gapfilterredir") == "redirects":
+                return {"query": {"redirects": [{"from": a, "to": b} for a, b in self.redirects.items()]}}
+            return {"query": {"pages": [self._page(t, i) for i, t in enumerate(titles)]}}
+        if q.get("generator") == "categorymembers":
+            cat = q["gcmtitle"].split(":", 1)[1]
+            sel = [t for t in titles if f"[[Category:{cat}]]" in self.pages[t]]
+            return {"query": {"pages": [self._page(t, titles.index(t)) for t in sel]}}
+        if "titles" in q:
+            req = q["titles"].split("|")
+            redir = [{"from": t, "to": self.redirects[t]} for t in req if t in self.redirects]
+            req = [self.redirects.get(t, t) for t in req]
+            content = q.get("prop") == "revisions"
+            if content:
+                self.content_requests += 1
+            pages = [self._page(t, titles.index(t), content) if t in self.pages else {"title": t, "missing": True} for t in req]
+            return {"query": {"pages": pages, "redirects": redir}}
+        raise AssertionError(f"unexpected query {q}")
+
+    def query_all(self, **q):
+        yield self.get(action="query", **q)
+
+
+def to_xml_dump():
+    import html
+    out = ['<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.11/" version="0.11">',
+           "<siteinfo><sitename>Sample Wiki</sitename><base>https://samplewiki.fandom.com/wiki/Main_Page</base>",
+           "<generator>MediaWiki 1.39</generator><namespaces><namespace key=\"14\">Category</namespace>"
+           "<namespace key=\"6\">File</namespace></namespaces></siteinfo>"]
+    for i, (t, text) in enumerate(sorted(PAGES.items())):
+        out.append(f"<page><title>{html.escape(t)}</title><ns>0</ns><id>{i + 1}</id><revision><id>{100 + i}</id>"
+                   f"<timestamp>2026-01-01T00:00:00Z</timestamp><text>{html.escape(text)}</text></revision></page>")
+    for a, b in REDIRECTS.items():
+        out.append(f'<page><title>{a}</title><ns>0</ns><id>99</id><redirect title="{b}" /><revision><id>1</id>'
+                   f"<text>#REDIRECT [[{b}]]</text></revision></page>")
+    out.append("</mediawiki>")
+    return "\n".join(out)
