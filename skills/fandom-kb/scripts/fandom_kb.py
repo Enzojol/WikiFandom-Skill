@@ -442,19 +442,28 @@ def html_to_text(s) -> str:
     return "\n".join(line for line in (clean_ws(x) for x in s.split("\n")) if line)
 
 
-def portable_fields(items: list) -> dict:
-    """Fields of one portable infobox (the `infoboxes` page property): {source: text}, groups flattened."""
+LINK_PLACEHOLDER = re.compile(r"<!--(?:IW)?LINK\b")
+
+
+def portable_fields(items: list, placeholders: set | None = None) -> dict:
+    """Fields of one portable infobox (the `infoboxes` page property): {source: text}, groups flattened.
+
+    Fandom stores some links as placeholders (`<!--IWLINK'" 11-->`) that the stored HTML never resolves;
+    the keys of such values go into `placeholders` so the caller can prefer the wikitext value."""
     out: dict = {}
     for it in items or []:
         d = it.get("data")
         if not isinstance(d, dict):
             continue  # images, navigation
         if isinstance(d.get("value"), list):  # group, horizontal group, panel, section
-            for k, v in portable_fields(d["value"]).items():
+            for k, v in portable_fields(d["value"], placeholders).items():
                 out.setdefault(k, v)
         elif it.get("type") == "data":
             key = (d.get("source") or html_to_text(d.get("label"))).strip()
-            val = html_to_text(d.get("value"))
+            raw = d.get("value")
+            if key and placeholders is not None and isinstance(raw, str) and LINK_PLACEHOLDER.search(raw):
+                placeholders.add(key)
+            val = html_to_text(raw)
             if key and val:
                 out.setdefault(key, val)
     return out
@@ -471,9 +480,9 @@ def apply_portable(ctx: Ctx, portable: list) -> None:
     template call sharing the most parameter names, else to the first call whose name looks like an infobox.
     Wikitext fields stay (they include parameters the box doesn't display); rendered values win on overlap.
     Templates the guess took for infoboxes but that match no portable box become plain data templates."""
-    boxes = []
+    boxes, placeholders = [], set()
     for b in portable or []:
-        f = portable_fields(b.get("data")) if isinstance(b, dict) else {}
+        f = portable_fields(b.get("data"), placeholders) if isinstance(b, dict) else {}
         if f and f not in boxes:  # sub-templates can draw the same box several times
             boxes.append(f)
     if not boxes:
@@ -492,10 +501,14 @@ def apply_portable(ctx: Ctx, portable: list) -> None:
             raw = guessed.get(best["idx"]) or next((t for t in ctx.templates if t["idx"] == best["idx"]), None)
             if raw in ctx.templates:
                 ctx.templates.remove(raw)
-            merged = {**(raw["fields"] if raw else {}), **fields}
+            raw_fields = raw["fields"] if raw else {}
+            merged = {**raw_fields, **{k: v for k, v in fields.items() if not (k in placeholders and raw_fields.get(k))}}
+            for k in placeholders:
+                if k in merged and not raw_fields.get(k) and k in fields:
+                    merged.pop(k)  # only a placeholder survived: no trustworthy value
             name, idx = best["template"], best["idx"]
         else:
-            merged, name, idx = fields, "Infobox", ctx.next_idx
+            merged, name, idx = {k: v for k, v in fields.items() if k not in placeholders}, "Infobox", ctx.next_idx
             ctx.next_idx += 1
         result.append({"template": name, "fields": merged, "idx": idx, "source": "portable"})
     for b in ctx.infoboxes:
@@ -701,7 +714,7 @@ class KB:
         return s
 
     def save_page(self, title, pageid, revid, timestamp, wikitext, wiki: Wiki | None, ns: Namespaces,
-                  categories: list | None = None, portable: list | None = None):
+                  categories: list | None = None, portable: list | None = None, url: str | None = None):
         """`categories`: the API's list, which includes categories added by templates (wikitext alone misses them).
         `portable`: the rendered portable infoboxes (Fandom page property), kept in raw/ next to the wikitext."""
         slug = self.slug_for(title)
@@ -713,7 +726,7 @@ class KB:
             pi_path.unlink(missing_ok=True)
         if categories:
             doc["categories"] = list(dict.fromkeys(doc["categories"] + categories))
-        url = wiki.page_url(title) if wiki else self.meta.get("base", "") + "/wiki/" + quote(title.replace(" ", "_"))
+        url = url or (wiki.page_url(title) if wiki else self.meta.get("base", "") + "/wiki/" + quote(title.replace(" ", "_")))
         doc.update(pageid=pageid, revid=revid, timestamp=timestamp, url=url, fetched=now_iso())
         (self.raw / f"{slug}.wiki").write_text(wikitext or "", encoding="utf-8")
         md = page_markdown(doc, url, (self.meta.get("license") or {}).get("text"))
@@ -759,6 +772,24 @@ class KB:
             if a.lower() == ql and t in self.index:
                 return self.index[t]
         return None
+
+    def reparse(self) -> int:
+        """Re-parse every page from raw/ (wikitext + saved page properties), no network: picks up parser
+        improvements in a KB built by an older version. Categories from the API and URLs are kept."""
+        ns = Namespaces.from_meta(self.meta)
+        n = 0
+        for title, e in list(self.index.items()):
+            raw = self.raw / f"{e['slug']}.wiki"
+            if not raw.exists():
+                continue
+            pi_path = self.raw / f"{e['slug']}.infoboxes.json"
+            portable = json.loads(pi_path.read_text(encoding="utf-8")) if pi_path.exists() else None
+            url = e.get("url")
+            self.save_page(title, e.get("pageid"), e.get("revid"), e.get("timestamp"), raw.read_text(encoding="utf-8"),
+                           None, ns, e.get("categories") or None, portable, url=url)
+            n += 1
+        self.flush()
+        return n
 
     def load_doc(self, entry: dict) -> dict:
         return json.loads((self.pages / f"{entry['slug']}.json").read_text(encoding="utf-8"))
@@ -822,6 +853,8 @@ class KB:
             while table in used_names:
                 table += "_t"
             used_names.add(table)
+            add_rank_columns(rows)
+            add_number_columns(rows)
             nested = any(parent[0] is not None for *_, parent, _ in rows)
             fixed = ["title", "url", "idx"] + (["parent_template", "parent_idx", "parent_field"] if nested else [])
             cols: list[str] = []
@@ -871,6 +904,23 @@ def siteinfo(client) -> dict:
     }
 
 
+def list_redirects(client) -> dict:
+    """{redirect title: target} for the main namespace, in two cheap listings (500 per request).
+
+    MediaWiki refuses to resolve redirects while listing them with the allpages generator, so: redirect
+    pages (id → title) from list=allpages, then (redirect id → target) from list=allredirects."""
+    titles: dict = {}
+    for data in client.query_all(list="allpages", apnamespace=0, apfilterredir="redirects", aplimit=500):
+        for p in data.get("query", {}).get("allpages", []) or []:
+            titles[p["pageid"]] = p["title"]
+    out: dict = {}
+    for data in client.query_all(list="allredirects", arnamespace=0, arprop="ids|title", arlimit=500):
+        for r in data.get("query", {}).get("allredirects", []) or []:
+            if r.get("fromid") in titles:
+                out[titles[r["fromid"]]] = r["title"]
+    return out
+
+
 def list_remote(client, scope: dict, wiki: Wiki) -> tuple[dict, dict]:
     """Return ({title: (pageid, lastrevid)}, {redirect_from: to}) for the requested scope."""
     remote, redirects = {}, {}
@@ -901,9 +951,7 @@ def list_remote(client, scope: dict, wiki: Wiki) -> tuple[dict, dict]:
             if scope.get("limit") and len(remote) >= scope["limit"]:
                 break
         if not scope.get("limit"):
-            for data in client.query_all(generator="allpages", gapnamespace=0, gapfilterredir="redirects", gaplimit=500, redirects=1):
-                for r in data.get("query", {}).get("redirects", []) or []:
-                    redirects[r["from"]] = r["to"]
+            redirects.update(list_redirects(client))
     if scope.get("limit"):
         remote = dict(list(remote.items())[: scope["limit"]])
     return remote, redirects
@@ -1131,6 +1179,46 @@ def plural(word: str) -> str:
     return word + "s"
 
 
+def add_rank_columns(rows: list) -> None:
+    """Text columns holding per-rank number lists ("70; 85; 105", "40 / 46 / 52") get one numeric column per
+    rank (`hp_1`, `hp_2`…) plus `hp_last` (the maximum rank, whatever the list length). The text column stays."""
+    candidates = list(dict.fromkeys(c for *_, f in rows for c, v in f.items() if isinstance(v, str) and v))
+    for c in candidates:
+        vals = [f[c] for *_, f in rows if isinstance(f.get(c), str) and f[c]]
+        sep = rank_separator(vals[:200]) if len(vals) >= 2 else None
+        if not sep:
+            continue
+        for *_, f in rows:
+            v = f.get(c)
+            if not (isinstance(v, str) and v):
+                continue
+            nums = [parse_number(x) for x in (y.strip() for y in v.split(sep)) if x]
+            if nums and all(n is not None for n in nums):
+                for i, n in enumerate(nums, 1):
+                    f.setdefault(f"{c}_{i}", n)
+                f.setdefault(f"{c}_last", nums[-1])
+
+
+LEADING_NUMBER = re.compile(r"^\s*[-+]?\d")
+
+
+def add_number_columns(rows: list) -> None:
+    """Text columns whose values start with a number ("1,620 (48.15% Slash)", "8.75 attacks/sec", "1,70 m")
+    get a numeric `<col>_num` with that leading number, so they can be sorted and compared in SQL."""
+    candidates = list(dict.fromkeys(c for *_, f in rows for c, v in f.items() if isinstance(v, str) and v))
+    for c in candidates:
+        if f"{c}_num" in candidates or f"{c}_last" in {k for *_, f in rows for k in f}:
+            continue
+        vals = [f[c] for *_, f in rows if isinstance(f.get(c), str) and f[c].strip()]
+        lead = [v for v in vals if LEADING_NUMBER.match(v)]
+        if not vals or len(lead) < 0.8 * len(vals):
+            continue
+        for *_, f in rows:
+            v = f.get(c)
+            if isinstance(v, str) and LEADING_NUMBER.match(v):
+                f[f"{c}_num"] = parse_number(v)
+
+
 def rank_separator(samples: list) -> str | None:
     """Return the separator of per-rank values ('70; 85; 105') if most samples are such lists of numbers."""
     for sep in RANK_SEPARATORS:
@@ -1263,6 +1351,7 @@ def main(argv=None):
 
     p = sub.add_parser("build-db", help="rebuild kb.sqlite (after editing a profile)")
     p.add_argument("wiki")
+    p.add_argument("--reparse", action="store_true", help="first re-parse every page from raw/ (after upgrading fandom-kb)")
 
     a = ap.parse_args(argv)
     root: Path = a.root.expanduser()
@@ -1377,6 +1466,8 @@ def main(argv=None):
         log(f"Draft profile → {target}. Edit it, then run `build-db {kb.slug}`. Share it upstream in profiles/{kb.slug}.yaml!")
     elif a.cmd == "build-db":
         kb = open_kb(root, a.wiki)
+        if a.reparse:
+            log(f"Re-parsed {kb.reparse()} pages from {kb.raw}")
         print(json.dumps(kb.build_db(), ensure_ascii=False, indent=1))
 
 

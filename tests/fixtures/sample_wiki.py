@@ -149,9 +149,19 @@ class FakeClient:
                               "namespacealiases": []}}
         titles = sorted(self.pages)
         if q.get("generator") == "allpages":
+            if q.get("redirects") and q.get("gapfilterredir") != "nonredirects":
+                # real MediaWiki (1.43) rejects this combination
+                raise RuntimeError("API error: {'code': 'params', 'info': 'Use \"gapfilterredir=nonredirects\" "
+                                   "instead of \"redirects\" when using \"allpages\" as a generator.'}")
             if q.get("gapfilterredir") == "redirects":
-                return {"query": {"redirects": [{"from": a, "to": b} for a, b in self.redirects.items()]}}
+                return {"query": {"pages": [{"pageid": 900 + i, "ns": 0, "title": a, "redirect": True}
+                                            for i, a in enumerate(self.redirects)]}}
             return {"query": {"pages": [self._page(t, i) for i, t in enumerate(titles)]}}
+        if q.get("list") == "allpages" and q.get("apfilterredir") == "redirects":
+            return {"query": {"allpages": [{"pageid": 900 + i, "ns": 0, "title": a} for i, a in enumerate(self.redirects)]}}
+        if q.get("list") == "allredirects":
+            return {"query": {"allredirects": [{"fromid": 900 + i, "ns": 0, "title": b}
+                                               for i, b in enumerate(self.redirects.values())]}}
         if q.get("generator") == "categorymembers":
             cat = q["gcmtitle"].split(":", 1)[1]
             sel = [t for t in titles if f"[[Category:{cat}]]" in self.pages[t]]

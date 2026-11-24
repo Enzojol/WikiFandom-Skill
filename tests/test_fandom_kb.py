@@ -261,6 +261,64 @@ def test_unclosed_list_tags_do_not_break_templates():
     assert ok == "- a\n- b"  # well-formed lists are left alone
 
 
+def test_portable_link_placeholders_fall_back_to_wikitext():
+    # Fandom stores interwiki links in the page property as placeholders: "<!--IWLINK'" 11-->"
+    text = "{{Character Infobox\n|name = Gojo\n|voice = [[Wikipedia:Yuichi Nakamura (voice actor)|Yuichi Nakamura]]\n}}"
+    props = [{"data": [
+        {"type": "data", "data": {"source": "name", "label": "Name", "value": "Gojo"}},
+        {"type": "data", "data": {"source": "voice", "label": "Voice", "value": "<!--IWLINK'\" 11--><br><!--IWLINK'\" 12--> (Child)"}},
+        {"type": "data", "data": {"source": "eng", "label": "English", "value": "<!--IWLINK'\" 13-->"}},
+    ]}]
+    box = fk.parse_wikitext(text, "Gojo", portable=props)["infoboxes"][0]
+    assert box["fields"]["voice"] == "Yuichi Nakamura"   # wikitext value, not "(Child)"
+    assert "eng" not in box["fields"]                    # nothing but a placeholder: dropped
+
+
+def test_rank_lists_get_columns_automatically():
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root)
+        kb = fk.KB(root, "samplewiki")
+        cols, rows = fk.run_sql(kb, "SELECT title, hp, hp_1, hp_6, hp_last, armor_last FROM unitranks ORDER BY hp_last DESC")
+        assert rows == [("Heavy Gunner", "40; 46; 52; 58; 64; 70", 40, 70, 70, 10), ("Raider", "30; 34; 38; 42; 46; 50", 30, 50, 50, 30)]
+        cols, rows = fk.run_sql(kb, "SELECT hp_1, hp_last FROM infobox_unit ORDER BY hp_last DESC")  # "40 / 46 / ..." too
+        assert rows == [(40, 70), (30, 50)]
+
+
+def test_reparse_rebuilds_pages_offline():
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root, FakeClient(pages={**PAGES, **PI_PAGES}, pageprops=PI_PROPS))
+        kb = fk.KB(root, "samplewiki")
+        doc_path = kb.dir / "pages" / "Heavy_Gunner.json"
+        old = json.loads(doc_path.read_text())
+        old.pop("nested")  # what a KB built by an older version looks like
+        doc_path.write_text(json.dumps(old))
+        fk.main(["--root", str(root), "build-db", "samplewiki", "--reparse"])
+        kb = fk.KB(root, "samplewiki")
+        doc = kb.load_doc(kb.index["Heavy Gunner"])
+        assert sorted(n["template"] for n in doc["nested"]) == ["AttackBox", "AttackBox", "Stun"]
+        assert doc["categories"] == ["Units", "Infantry", "Tier 2"]             # API categories kept
+        assert kb.load_doc(kb.index["Pulse Rifle"])["infoboxes"][0]["source"] == "portable"  # saved page props reused
+        assert kb.index["Raider"]["url"] == "https://samplewiki.fandom.com/wiki/Raider"
+
+
+def test_numbers_inside_text_get_a_numeric_column():
+    rows = [("A", "u", i, (None, None, None), {"total": v, "name": n, "born": b})
+            for i, (v, n, b) in enumerate([("1,620 (48.15% Slash)", "Exergis", "December 7, 1989"),
+                                           ("760 (100.00% Heat)", "Felarx", "March 20, 2003"),
+                                           ("1,560 (80.00% Slash)", "Tigris Prime", "1989")])]
+    fk.add_number_columns(rows)
+    assert [f["total_num"] for *_, f in rows] == [1620, 760, 1560]
+    assert all("name_num" not in f and "born_num" not in f for *_, f in rows)  # text and dates left alone
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root, FakeClient(pages=PI_PAGES, redirects={}, pageprops=PI_PROPS))
+        kb = fk.KB(root, "samplewiki")
+        cols, rows = fk.run_sql(kb, "SELECT * FROM weaponinfoboxautomatic")
+        assert "impact_num" not in cols and "spread_num" in cols  # "Impact 7.9" starts with a word; "3.50°…" a number
+
+
 def fk_page(title):
     return PAGES[title]
 
