@@ -197,6 +197,15 @@ def test_script_declares_inline_dependencies():
     assert all(r in block for r in reqs)
 
 
+def test_data_parser_function_is_a_template():
+    # Wowpedia writes item stats as {{#data:Itemtip|...}} instead of a plain template call
+    text = "{{#data:Itemtip\n|name=Ashkandi\n|quality=epic\n|slot=Two-Hand\n|dmglow=6\n|dmghigh=10\n}}\nA sword."
+    doc = fk.parse_wikitext(text, "Ashkandi")
+    assert doc["infoboxes"] == [{"template": "Itemtip", "idx": 0,
+                                 "fields": {"name": "Ashkandi", "quality": "epic", "slot": "Two-Hand", "dmglow": "6", "dmghigh": "10"}}]
+    assert fk.parse_wikitext("{{#if:x|yes}} ok", "T")["markdown"] == "ok"  # other parser functions still skipped
+
+
 def fk_page(title):
     return PAGES[title]
 

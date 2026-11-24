@@ -229,6 +229,8 @@ def clean_ws(s: str) -> str:
 def template_name(tpl, ns: Namespaces) -> str:
     name = clean_ws(str(tpl.name.strip_code() if hasattr(tpl.name, "strip_code") else tpl.name)) or clean_ws(str(tpl.name))
     name = MAGIC_RE.sub("", name).replace("_", " ").strip()
+    if name.lower().startswith("#data:"):  # {{#data:Itemtip|…}} (Wowpedia): structured data, treat as template Itemtip
+        name = name[6:].strip()
     if ":" in name and name.split(":", 1)[0].strip().lower() in ns.template:
         name = name.split(":", 1)[1].strip()
     return name[:1].upper() + name[1:] if name else name
