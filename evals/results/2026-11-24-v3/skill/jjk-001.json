@@ -17,11 +17,11 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Satoru Gojo\" --json"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Satoru Gojo\" --json"
   }
  ],
  "used_kb": true,

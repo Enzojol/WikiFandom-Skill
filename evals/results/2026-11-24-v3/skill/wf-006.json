@@ -17,19 +17,19 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe | grep -iE \"^  (weapon|[a-z_]*weapon)\" | cut -c1-1500"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema warframe | grep -iE \"^  (weapon|[a-z_]*weapon)\" | cut -c1-1500"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, mastery, attack1total, attack1total_num, trigger FROM weaponinfoboxautomatic WHERE mastery=0 AND slot='Primary' ORDER BY attack1total_num DESC LIMIT 12\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, mastery, attack1total, attack1total_num, trigger FROM weaponinfoboxautomatic WHERE mastery=0 AND slot='Primary' ORDER BY attack1total_num DESC LIMIT 12\""
   }
  ],
  "used_kb": true,

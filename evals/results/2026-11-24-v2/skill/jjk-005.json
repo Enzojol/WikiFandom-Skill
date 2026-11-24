@@ -17,19 +17,19 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"SPECIALZ opening\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"SPECIALZ opening\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"SpecialZ\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"SpecialZ\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, value FROM template_values WHERE field LIKE '%opening%' AND value LIKE '%SPECIALZ%' ORDER BY title\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, value FROM template_values WHERE field LIKE '%opening%' AND value LIKE '%SPECIALZ%' ORDER BY title\""
   }
  ],
  "used_kb": true,

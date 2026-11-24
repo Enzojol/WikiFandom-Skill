@@ -17,27 +17,27 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shibuya Incident Arc\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shibuya Incident Arc\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shinjuku Showdown Arc\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shinjuku Showdown Arc\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT arc, COUNT(*) n, MIN(CAST(SUBSTR(title,9) AS INT)) lo, MAX(CAST(SUBSTR(title,9) AS INT)) hi FROM chapters WHERE title LIKE 'Chapter %' AND arc LIKE '%Shibuya%' OR arc LIKE '%Shinjuku%' GROUP BY arc\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT arc, COUNT(*) n, MIN(CAST(SUBSTR(title,9) AS INT)) lo, MAX(CAST(SUBSTR(title,9) AS INT)) hi FROM chapters WHERE title LIKE 'Chapter %' AND arc LIKE '%Shibuya%' OR arc LIKE '%Shinjuku%' GROUP BY arc\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema jujutsu-kaisen"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema jujutsu-kaisen"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters FROM story_arcs_infobox WHERE title LIKE 'Shibuya%' OR title LIKE 'Shinjuku%'\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters FROM story_arcs_infobox WHERE title LIKE 'Shibuya%' OR title LIKE 'Shinjuku%'\""
   }
  ],
  "used_kb": true,

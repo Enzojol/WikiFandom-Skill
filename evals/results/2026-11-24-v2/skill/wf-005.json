@@ -17,19 +17,19 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
   },
   {
    "tool": "Bash",
-   "input": "grep -n -i -E \"crit\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v2-workdir/5c78679d-e9f1-479c-91bf-7b92dcdf2ab2/tool-results/bw4fngak6.txt | cut -c1-600 | head -20"
+   "input": "grep -n -i -E \"crit\" ~/.claude/projects/<project>-evals-results-2026-11-24-v2-workdir/5c78679d-e9f1-479c-91bf-7b92dcdf2ab2/tool-results/bw4fngak6.txt | cut -c1-600 | head -20"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, class, attack1critchance, url FROM weaponinfoboxautomatic WHERE attack1critchance IN (0.5,50) ORDER BY title\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, class, attack1critchance, url FROM weaponinfoboxautomatic WHERE attack1critchance IN (0.5,50) ORDER BY title\""
   }
  ],
  "used_kb": true,

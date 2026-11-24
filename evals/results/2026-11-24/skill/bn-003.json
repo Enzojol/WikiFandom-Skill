@@ -14,14 +14,14 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_016epQrfGFLbuZkVEqorh3W6",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+    "command": "cd <repo>/skills/fandom-kb && uv run scripts/fandom_kb.py list"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_01Gjt6EvLsPA825BxDqds8CB",
    "tool_input": {
-    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K search battlenations \"Heavy Tank\" | head -8; uv run $K search battlenations \"War Mammoth\" | head -8"
+    "command": "K=<repo>/skills/fandom-kb/scripts/fandom_kb.py; uv run $K search battlenations \"Heavy Tank\" | head -8; uv run $K search battlenations \"War Mammoth\" | head -8"
    }
   }
  ],

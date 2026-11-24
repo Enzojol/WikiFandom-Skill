@@ -54,7 +54,7 @@ except ImportError:  # pragma: no cover
     yaml = None
 
 VERSION = "0.1.0"
-USER_AGENT = f"fandom-kb/{VERSION} (+https://github.com/fandom-kb/fandom-kb; personal knowledge base)"
+USER_AGENT = f"fandom-kb/{VERSION} (+https://github.com/Enzojol/Fandom-Skill; personal knowledge base)"
 DEFAULT_ROOT = Path(os.environ.get("FANDOM_KB_DIR", Path.home() / ".fandom-kb"))
 PROFILES_DIR = Path(__file__).resolve().parent.parent / "profiles"
 CONFIRM_THRESHOLD = 3000  # pages; above this `fetch` needs --yes

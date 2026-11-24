@@ -14,14 +14,14 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_019WQK8moYvYDJmuS6KJdqQT",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+    "command": "cd <repo>/skills/fandom-kb && uv run scripts/fandom_kb.py list"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_01MNk44nHKSnD2fTbih5WtK5",
    "tool_input": {
-    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema battlenations | grep -i -B2 -A30 \"unit\" | head -80"
+    "command": "K=<repo>/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema battlenations | grep -i -B2 -A30 \"unit\" | head -80"
    }
   }
  ],

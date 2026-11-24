@@ -17,19 +17,19 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema jujutsu-kaisen"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema jujutsu-kaisen"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters, episodes FROM story_arcs_infobox\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters, episodes FROM story_arcs_infobox\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT arc, COUNT(*) n FROM chapter_infobox GROUP BY arc ORDER BY n DESC\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT arc, COUNT(*) n FROM chapter_infobox GROUP BY arc ORDER BY n DESC\""
   }
  ],
  "used_kb": true,

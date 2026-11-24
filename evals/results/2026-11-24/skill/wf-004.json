@@ -14,7 +14,7 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_01MShyS74PeNnFYDMbf7cjW3",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill; ls; ls evals/results/2026-11-24/workdir | head; ls ~/.fandom-kb 2>/dev/null | head"
+    "command": "cd <repo>; ls; ls evals/results/2026-11-24/workdir | head; ls ~/.fandom-kb 2>/dev/null | head"
    }
   }
  ],

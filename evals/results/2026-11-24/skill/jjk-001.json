@@ -14,7 +14,7 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_01TSUSyFApmjKQG4okUA724y",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py show jujutsu-kaisen \"Satoru Gojo\" 2>&1 | head -60"
+    "command": "cd <repo>/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py show jujutsu-kaisen \"Satoru Gojo\" 2>&1 | head -60"
    }
   }
  ],

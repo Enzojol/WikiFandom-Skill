@@ -17,31 +17,31 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp, p.unit_type FROM unitranksbox r LEFT JOIN unitprofile p ON p.title=r.title LIMIT 8\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp, p.unit_type FROM unitranksbox r LEFT JOIN unitprofile p ON p.title=r.title LIMIT 8\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, hp_last, hp FROM unitranksbox ORDER BY hp_last DESC LIMIT 15\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, hp_last, hp FROM unitranksbox ORDER BY hp_last DESC LIMIT 15\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, p.unit_type, i.affiliation, p.building_required, r.url FROM unitranksbox r JOIN unitprofile p ON p.title=r.title LEFT JOIN unitinfobox i ON i.title=r.title ORDER BY r.hp_last DESC LIMIT 15\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, p.unit_type, i.affiliation, p.building_required, r.url FROM unitranksbox r JOIN unitprofile p ON p.title=r.title LEFT JOIN unitinfobox i ON i.title=r.title ORDER BY r.hp_last DESC LIMIT 15\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, c.category FROM unitranksbox r JOIN categories c ON c.title=r.title WHERE c.category LIKE '%Player%' ORDER BY r.hp_last DESC LIMIT 15\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, c.category FROM unitranksbox r JOIN categories c ON c.title=r.title WHERE c.category LIKE '%Player%' ORDER BY r.hp_last DESC LIMIT 15\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT category, count(*) n FROM categories WHERE title IN ('Bigfoot','Portable Wall','Tamed Mammoth Matriarch','Monster Grouper') GROUP BY category\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT category, count(*) n FROM categories WHERE title IN ('Bigfoot','Portable Wall','Tamed Mammoth Matriarch','Monster Grouper') GROUP BY category\""
   }
  ],
  "used_kb": true,

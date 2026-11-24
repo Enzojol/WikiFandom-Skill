@@ -39,6 +39,16 @@ ARMS = {
 }
 
 
+def scrub(text, args):
+    """Replace machine-specific paths with placeholders so results can be shared as is."""
+    if not isinstance(text, str):
+        return text
+    home = str(Path.home())
+    for path, label in ((str(args.kb_dir), "<kb-dir>"), (str(ROOT), "<repo>"), (home, "~")):
+        text = text.replace(path, label).replace(path.replace("/", "-"), label)  # Claude Code encodes paths with "-"
+    return text
+
+
 def run_one(arm: str, wiki: str, q: dict, args, out_dir: Path) -> dict:
     out = out_dir / arm / f"{q['id']}.json"
     if out.exists() and not args.force:
@@ -62,11 +72,13 @@ def run_one(arm: str, wiki: str, q: dict, args, out_dir: Path) -> dict:
                     if block.get("type") == "tool_use":
                         inp = block.get("input") or {}
                         tools.append({"tool": block.get("name"),
-                                      "input": inp.get("command") or inp.get("query") or inp.get("url") or inp.get("skill") or ""})
+                                      "input": scrub(inp.get("command") or inp.get("query") or inp.get("url")
+                                                     or inp.get("skill") or "", args)})
     except subprocess.TimeoutExpired:
         data, tools = {"result": None, "error": f"timeout after {args.timeout}s"}, []
     rec = {"id": q["id"], "wiki": wiki, "kind": q["kind"], "arm": arm, "question": q["q"],
-           "answer": data.get("result"), "error": data.get("error") or (data.get("subtype") if data.get("is_error") else None),
+           "answer": scrub(data.get("result"), args),
+           "error": scrub(data.get("error") or (data.get("subtype") if data.get("is_error") else None), args),
            "cost_usd": data.get("total_cost_usd"), "turns": data.get("num_turns"),
            "seconds": round(time.time() - t, 1), "denials": data.get("permission_denials"), "tools": tools,
            "used_kb": any("fandom_kb.py" in str(x["input"]) or x["tool"] == "Skill" for x in tools)}
@@ -103,7 +115,7 @@ def main(argv=None):
     print(f"{len(jobs)} runs, model {args.model}, KBs in {args.kb_dir}", file=sys.stderr)
     with ThreadPoolExecutor(args.j) as ex:
         list(ex.map(lambda j: run_one(*j, args, args.out), jobs))
-    (args.out / "meta.json").write_text(json.dumps({"model": args.model, "kb_dir": str(args.kb_dir),
+    (args.out / "meta.json").write_text(json.dumps({"model": args.model, "kb_dir": str(args.kb_dir).replace(str(Path.home()), "~"),
                                                     "files": [f.name for f in files]}, indent=1))
 
 

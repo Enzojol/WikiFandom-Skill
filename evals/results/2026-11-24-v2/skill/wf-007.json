@@ -17,19 +17,19 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
   },
   {
    "tool": "Bash",
-   "input": "grep -n -i -E \"^  \\w+ +\\(.*(shotgun|total_damage|mastery)\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v2-workdir/0805283d-4ec2-4e42-8176-11859d132ba2/tool-results/bpvy7x0lo.txt | cut -c1-1500"
+   "input": "grep -n -i -E \"^  \\w+ +\\(.*(shotgun|total_damage|mastery)\" ~/.claude/projects/<project>-evals-results-2026-11-24-v2-workdir/0805283d-4ec2-4e42-8176-11859d132ba2/tool-results/bpvy7x0lo.txt | cut -c1-1500"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, class, mastery, attack1total, attack1multishot, shottype FROM weaponinfoboxautomatic WHERE class LIKE '%Shotgun%' ORDER BY CAST(attack1total AS REAL) DESC LIMIT 12\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, class, mastery, attack1total, attack1multishot, shottype FROM weaponinfoboxautomatic WHERE class LIKE '%Shotgun%' ORDER BY CAST(attack1total AS REAL) DESC LIMIT 12\""
   }
  ],
  "used_kb": true,

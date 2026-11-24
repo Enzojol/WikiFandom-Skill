@@ -14,7 +14,7 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_01QBKefx6f7s6YUGoFM3VH8p",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list 2>&1 | head -20"
+    "command": "cd <repo>/skills/fandom-kb && uv run scripts/fandom_kb.py list 2>&1 | head -20"
    }
   }
  ],

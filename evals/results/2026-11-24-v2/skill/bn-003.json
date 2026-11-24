@@ -17,19 +17,19 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, url, hp_6, hp_last FROM units WHERE title IN ('Heavy Tank','War Mammoth')\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, url, hp_6, hp_last FROM units WHERE title IN ('Heavy Tank','War Mammoth')\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, url, idx, hp FROM unitranksbox WHERE title LIKE '%Heavy Tank%' OR title LIKE '%Mammoth%'\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, url, idx, hp FROM unitranksbox WHERE title LIKE '%Heavy Tank%' OR title LIKE '%Mammoth%'\""
   }
  ],
  "used_kb": true,

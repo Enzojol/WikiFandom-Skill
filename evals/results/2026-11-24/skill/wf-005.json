@@ -14,14 +14,14 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_01KHthUDMCHtCGZ6f3PwMyJh",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill && uv run skills/fandom-kb/scripts/fandom_kb.py list"
+    "command": "cd <repo> && uv run skills/fandom-kb/scripts/fandom_kb.py list"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_01MxakxG6nZWHyy3RmxesnA8",
    "tool_input": {
-    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema warframe | grep -i -E \"weapon|crit\" | head -30"
+    "command": "K=<repo>/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema warframe | grep -i -E \"weapon|crit\" | head -30"
    }
   }
  ],

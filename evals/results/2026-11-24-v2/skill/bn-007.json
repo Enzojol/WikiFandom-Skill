@@ -17,15 +17,15 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT a.title, a.name, a.rank, a.mindmg, a.maxdmg, p.building_required FROM attackbox a JOIN unitprofile p ON a.title=p.title WHERE p.building_required LIKE '%Barracks%' ORDER BY a.maxdmg DESC LIMIT 8\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT a.title, a.name, a.rank, a.mindmg, a.maxdmg, p.building_required FROM attackbox a JOIN unitprofile p ON a.title=p.title WHERE p.building_required LIKE '%Barracks%' ORDER BY a.maxdmg DESC LIMIT 8\""
   }
  ],
  "used_kb": true,

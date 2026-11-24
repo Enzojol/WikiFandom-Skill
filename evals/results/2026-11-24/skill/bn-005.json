@@ -14,21 +14,21 @@
    "tool_name": "Bash",
    "tool_use_id": "toolu_01FuS43wp39UAQArD7koEnUk",
    "tool_input": {
-    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py schema battlenations | head -80"
+    "command": "cd <repo>/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py schema battlenations | head -80"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_012scnxrguERRJKhmup4NBAk",
    "tool_input": {
-    "command": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp FROM unitranksbox r JOIN unitprofile p ON p.title=r.title\" > /tmp/hp.txt; python3 -I - <<'E'\nrows=[]\nfor l in open('/tmp/hp.txt').read().splitlines()[2:]:\n    t,h=[x.strip() for x in l.split('|',1)]\n    v=[int(x) for x in h.replace(',','').split(';') if x.strip().isdigit()]\n    if v: rows.append((max(v),t,len(v)))\nfor r in sorted(rows,reverse=True)[:10]: print(r)\nE"
+    "command": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp FROM unitranksbox r JOIN unitprofile p ON p.title=r.title\" > /tmp/hp.txt; python3 -I - <<'E'\nrows=[]\nfor l in open('/tmp/hp.txt').read().splitlines()[2:]:\n    t,h=[x.strip() for x in l.split('|',1)]\n    v=[int(x) for x in h.replace(',','').split(';') if x.strip().isdigit()]\n    if v: rows.append((max(v),t,len(v)))\nfor r in sorted(rows,reverse=True)[:10]: print(r)\nE"
    }
   },
   {
    "tool_name": "Bash",
    "tool_use_id": "toolu_019MZ7vHxpvNLg6D53h6nauQ",
    "tool_input": {
-    "command": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp FROM unitranksbox r JOIN unitprofile p ON p.title=r.title\" > hp.txt; python3 -I - <<'E'\nrows=[]\nfor l in open('hp.txt').read().splitlines()[2:]:\n    t,h=[x.strip() for x in l.split('|',1)]\n    v=[int(x) for x in h.replace(',','').split(';') if x.strip().isdigit()]\n    if v: rows.append((v[-1],t,len(v)))\nfor r in sorted(rows,reverse=True)[:10]: print(r)\nE"
+    "command": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp FROM unitranksbox r JOIN unitprofile p ON p.title=r.title\" > hp.txt; python3 -I - <<'E'\nrows=[]\nfor l in open('hp.txt').read().splitlines()[2:]:\n    t,h=[x.strip() for x in l.split('|',1)]\n    v=[int(x) for x in h.replace(',','').split(';') if x.strip().isdigit()]\n    if v: rows.append((v[-1],t,len(v)))\nfor r in sorted(rows,reverse=True)[:10]: print(r)\nE"
    }
   }
  ],

@@ -1,6 +1,6 @@
 {
  "model": "sonnet",
- "kb_dir": "/private/tmp/claude-501/-Users-enzojolivet/2eff544e-fdd8-45eb-be1e-9d45fb07b37e/scratchpad/evalkb",
+ "kb_dir": "<kb-dir>",
  "files": [
   "battlenations.yaml",
   "jujutsu-kaisen.yaml",

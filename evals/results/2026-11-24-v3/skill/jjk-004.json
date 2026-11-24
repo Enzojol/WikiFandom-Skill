@@ -17,31 +17,31 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shibuya Incident Arc chapters\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shibuya Incident Arc chapters\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shinjuku Showdown Arc chapters\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shinjuku Showdown Arc chapters\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters, volumes FROM story_arcs WHERE title IN ('Shibuya Incident Arc','Shinjuku Showdown Arc')\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters, volumes FROM story_arcs WHERE title IN ('Shibuya Incident Arc','Shinjuku Showdown Arc')\""
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Shinjuku Showdown Arc\" --section Overview"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Shinjuku Showdown Arc\" --section Overview"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Shibuya Incident Arc\" --json"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Shibuya Incident Arc\" --json"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, field, value FROM template_values WHERE template='Story Arcs Infobox' AND field='chapters' AND title IN ('Shibuya Incident Arc','Shinjuku Showdown Arc')\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, field, value FROM template_values WHERE template='Story Arcs Infobox' AND field='chapters' AND title IN ('Shibuya Incident Arc','Shinjuku Showdown Arc')\""
   }
  ],
  "used_kb": true,

@@ -17,11 +17,11 @@
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py list"
   },
   {
    "tool": "Bash",
-   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, field, value, url FROM template_values WHERE title IN ('Yuta Okkotsu','Megumi Fushiguro') AND lower(field) LIKE '%height%'\""
+   "input": "uv run <repo>/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, field, value, url FROM template_values WHERE title IN ('Yuta Okkotsu','Megumi Fushiguro') AND lower(field) LIKE '%height%'\""
   }
  ],
  "used_kb": true,
