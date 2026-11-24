@@ -114,9 +114,10 @@ HIDDEN_CATEGORIES = {"Heavy Gunner": ["Pages with broken file links"]}
 class FakeClient:
     """Answers the handful of MediaWiki API calls fandom_kb makes."""
 
-    def __init__(self, pages=None, redirects=None):
+    def __init__(self, pages=None, redirects=None, pageprops=None):
         self.pages = dict(pages or PAGES)
-        self.redirects = dict(redirects or REDIRECTS)
+        self.redirects = dict(REDIRECTS if redirects is None else redirects)
+        self.pageprops = dict(pageprops or {})
         self.revs = {t: 100 + i for i, t in enumerate(sorted(self.pages))}
         self.calls = 0
         self.content_requests = 0
@@ -126,6 +127,9 @@ class FakeClient:
         if content:
             p["revisions"] = [{"revid": self.revs[t], "timestamp": "2026-01-01T00:00:00Z",
                                "slots": {"main": {"content": self.pages[t]}}}]
+            if t in self.pageprops:
+                import json
+                p["pageprops"] = {"infoboxes": json.dumps(self.pageprops[t])}
         return p
 
     def _categories(self, t, hidden_ok):

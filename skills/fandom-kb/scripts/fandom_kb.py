@@ -25,6 +25,7 @@ import argparse
 import csv
 import gzip
 import hashlib
+import html
 import io
 import json
 import os
@@ -187,6 +188,8 @@ INFOBOX_HINT = re.compile(r"infobox|info box|^box\b|\bbox$|^(unit|building|chara
 SKIP_TEMPLATE = re.compile(r"navbox|^nav\b|stub|clear|clr|^reflist|^toc|^disambig|^delete|^cleanup|^sic$", re.I)
 SKIP_TAGS = {"ref", "references", "gallery", "imagemap", "includeonly", "templatedata", "math", "score", "mapframe", "div style"}
 MAGIC_RE = re.compile(r"__[A-Z]+__")
+# HTML elements whose end tag is optional: MediaWiki accepts "<li>a<li>b", mwparserfromhell then drops the template
+OPTIONAL_END_TAG_RE = re.compile(r"<(/?)(?:li|dd|dt|tr|td|th)\b[^>]*>", re.I)
 
 
 class Namespaces:
@@ -216,6 +219,7 @@ class Ctx:
     infoboxes: list = field(default_factory=list)
     templates: list = field(default_factory=list)
     nested: list = field(default_factory=list)   # data templates inside another template's parameter
+    calls: list = field(default_factory=list)    # every top-level template call: {template, keys, idx}
     parents: list = field(default_factory=list)  # stack of (template, idx, param) while rendering params
     next_idx: int = 0                            # page-local id of each template instance
     seen_heading: bool = False
@@ -323,6 +327,12 @@ def template_fields(tpl, ctx: Ctx, name: str = "", idx: int | None = None) -> tu
 
 def render_template(tpl, ctx: Ctx) -> str:
     name = template_name(tpl, ctx.ns)
+    if name.lower().startswith("#invoke:") and ctx.depth == 0:
+        # Lua module call: remember it so a portable infobox it draws can be named after the module
+        ctx.calls.append({"template": name.split(":", 1)[1].strip(), "keys": [clean_ws(str(p.name)) for p in tpl.params
+                                                                           if p.showkey], "idx": ctx.next_idx})
+        ctx.next_idx += 1
+        return ""
     if not name or name.startswith("#"):
         return ""
     if name.upper() in ("PAGENAME", "FULLPAGENAME", "BASEPAGENAME"):
@@ -332,6 +342,8 @@ def render_template(tpl, ctx: Ctx) -> str:
     idx = ctx.next_idx
     ctx.next_idx += 1
     named, positional = template_fields(tpl, ctx, name, idx)
+    if ctx.depth == 0:
+        ctx.calls.append({"template": name, "keys": list(named), "idx": idx})
     is_box = ctx.depth == 0 and named and (INFOBOX_HINT.search(name) or (not ctx.seen_heading and len(named) >= 4))
     if is_box:
         ctx.infoboxes.append({"template": name, "fields": named, "idx": idx})
@@ -420,9 +432,100 @@ def render_tag(n, ctx: Ctx) -> str:
     return inner
 
 
-def parse_wikitext(wikitext: str, title: str, ns: Namespaces | None = None) -> dict:
+def html_to_text(s) -> str:
+    """Rendered infobox HTML → plain text; <br>, paragraphs and list items become newlines."""
+    if not s or not isinstance(s, str):
+        return ""
+    s = re.sub(r"(?is)<(script|style)\b.*?</\1>", "", s)
+    s = re.sub(r"(?i)<br\s*/?>|</p>|</li>|</div>|</tr>", "\n", s)
+    s = html.unescape(re.sub(r"<[^>]+>", "", s))
+    return "\n".join(line for line in (clean_ws(x) for x in s.split("\n")) if line)
+
+
+def portable_fields(items: list) -> dict:
+    """Fields of one portable infobox (the `infoboxes` page property): {source: text}, groups flattened."""
+    out: dict = {}
+    for it in items or []:
+        d = it.get("data")
+        if not isinstance(d, dict):
+            continue  # images, navigation
+        if isinstance(d.get("value"), list):  # group, horizontal group, panel, section
+            for k, v in portable_fields(d["value"]).items():
+                out.setdefault(k, v)
+        elif it.get("type") == "data":
+            key = (d.get("source") or html_to_text(d.get("label"))).strip()
+            val = html_to_text(d.get("value"))
+            if key and val:
+                out.setdefault(key, val)
+    return out
+
+
+def _norm_key(k: str) -> str:
+    return re.sub(r"[\s_]+", " ", k).strip().lower()
+
+
+def apply_portable(ctx: Ctx, portable: list) -> None:
+    """Replace the name-based infobox guess with Fandom's rendered portable infoboxes.
+
+    The page property doesn't say which template drew the box, so each one is matched to the top-level
+    template call sharing the most parameter names, else to the first call whose name looks like an infobox.
+    Wikitext fields stay (they include parameters the box doesn't display); rendered values win on overlap.
+    Templates the guess took for infoboxes but that match no portable box become plain data templates."""
+    boxes = []
+    for b in portable or []:
+        f = portable_fields(b.get("data")) if isinstance(b, dict) else {}
+        if f and f not in boxes:  # sub-templates can draw the same box several times
+            boxes.append(f)
+    if not boxes:
+        return
+    guessed = {b["idx"]: b for b in ctx.infoboxes}
+    used: set = set()
+    result = []
+    for fields in boxes:
+        keys = {_norm_key(k) for k in fields}
+        free = [c for c in ctx.calls if c["idx"] not in used and not SKIP_TEMPLATE.search(c["template"])]
+        best = max(free, key=lambda c: len(keys & {_norm_key(k) for k in c["keys"]}), default=None)
+        if best and not keys & {_norm_key(k) for k in best["keys"]}:
+            best = next((c for c in free if INFOBOX_HINT.search(c["template"]) or re.search(r"(?i)box$", c["template"])), None)
+        if best:
+            used.add(best["idx"])
+            raw = guessed.get(best["idx"]) or next((t for t in ctx.templates if t["idx"] == best["idx"]), None)
+            if raw in ctx.templates:
+                ctx.templates.remove(raw)
+            merged = {**(raw["fields"] if raw else {}), **fields}
+            name, idx = best["template"], best["idx"]
+        else:
+            merged, name, idx = fields, "Infobox", ctx.next_idx
+            ctx.next_idx += 1
+        result.append({"template": name, "fields": merged, "idx": idx, "source": "portable"})
+    for b in ctx.infoboxes:
+        if b["idx"] not in used and len(b["fields"]) >= 2:
+            ctx.templates.append({"template": b["template"], "fields": b["fields"], "positional": [], "idx": b["idx"]})
+    ctx.templates.sort(key=lambda t: t["idx"])
+    ctx.infoboxes[:] = result
+
+
+def _unparsed(code) -> int:
+    """Top-level text still holding '{{': templates the parser gave up on."""
+    return sum(str(n).count("{{") for n in code.nodes if isinstance(n, Text))
+
+
+def parse_tolerant(wikitext: str):
+    code = mwp.parse(wikitext)
+    if _unparsed(code):
+        # retry with unclosed-able list/table tags turned into line breaks; keep it only if it parses better
+        retry = mwp.parse(OPTIONAL_END_TAG_RE.sub(lambda m: "" if m.group(1) else "<br>", wikitext))
+        if _unparsed(retry) < _unparsed(code):
+            return retry
+    return code
+
+
+def parse_wikitext(wikitext: str, title: str, ns: Namespaces | None = None, portable: list | None = None) -> dict:
+    """`portable`: the page's `infoboxes` page property (Fandom), which beats guessing infoboxes from wikitext."""
     ctx = Ctx(title=title, ns=ns or Namespaces())
-    body = render(mwp.parse(wikitext or ""), ctx)
+    body = render(parse_tolerant(wikitext or ""), ctx)
+    if portable:
+        apply_portable(ctx, portable)
     body = re.sub(r"[ \t]+\n", "\n", body)
     body = re.sub(r"\n{3,}", "\n\n", body).strip()
     sections, cur = [], {"title": "Intro", "level": 1, "text": []}
@@ -598,10 +701,16 @@ class KB:
         return s
 
     def save_page(self, title, pageid, revid, timestamp, wikitext, wiki: Wiki | None, ns: Namespaces,
-                  categories: list | None = None):
-        """`categories`: the API's list, which includes categories added by templates (wikitext alone misses them)."""
+                  categories: list | None = None, portable: list | None = None):
+        """`categories`: the API's list, which includes categories added by templates (wikitext alone misses them).
+        `portable`: the rendered portable infoboxes (Fandom page property), kept in raw/ next to the wikitext."""
         slug = self.slug_for(title)
-        doc = parse_wikitext(wikitext, title, ns)
+        doc = parse_wikitext(wikitext, title, ns, portable)
+        pi_path = self.raw / f"{slug}.infoboxes.json"
+        if portable:
+            pi_path.write_text(json.dumps(portable, ensure_ascii=False), encoding="utf-8")
+        else:
+            pi_path.unlink(missing_ok=True)
         if categories:
             doc["categories"] = list(dict.fromkeys(doc["categories"] + categories))
         url = wiki.page_url(title) if wiki else self.meta.get("base", "") + "/wiki/" + quote(title.replace(" ", "_"))
@@ -620,7 +729,8 @@ class KB:
     def remove(self, title):
         e = self.index.pop(title, None)
         if e:
-            for p in (self.raw / f"{e['slug']}.wiki", self.pages / f"{e['slug']}.md", self.pages / f"{e['slug']}.json"):
+            for p in (self.raw / f"{e['slug']}.wiki", self.raw / f"{e['slug']}.infoboxes.json",
+                      self.pages / f"{e['slug']}.md", self.pages / f"{e['slug']}.json"):
                 p.unlink(missing_ok=True)
 
     def flush(self):
@@ -818,14 +928,20 @@ def sync(kb: KB, client, wiki: Wiki, scope: dict, yes: bool = False, force: bool
     for i in range(0, len(todo), 50):
         batch = todo[i:i + 50]
         cont: dict = {}
-        got: dict[str, dict] = {}  # title → {pageid, rev, categories}, merged across continuation responses
+        got: dict[str, dict] = {}  # title → {pageid, rev, categories, portable}, merged across continuations
         while True:
-            data = client.get(action="query", titles="|".join(batch), prop="revisions|categories",
-                              rvprop="content|ids|timestamp", rvslots="main", clshow="!hidden", cllimit="max", **cont)
+            data = client.get(action="query", titles="|".join(batch), prop="revisions|categories|pageprops",
+                              rvprop="content|ids|timestamp", rvslots="main", clshow="!hidden", cllimit="max",
+                              ppprop="infoboxes", **cont)
             for p in data.get("query", {}).get("pages", []) or []:
-                g = got.setdefault(p["title"], {"pageid": p.get("pageid"), "rev": None, "categories": []})
+                g = got.setdefault(p["title"], {"pageid": p.get("pageid"), "rev": None, "categories": [], "portable": None})
                 if p.get("revisions"):
                     g["rev"] = p["revisions"][0]
+                if (p.get("pageprops") or {}).get("infoboxes"):
+                    try:
+                        g["portable"] = json.loads(p["pageprops"]["infoboxes"])
+                    except ValueError:
+                        pass
                 g["categories"] += [c["title"].split(":", 1)[-1] for c in p.get("categories", []) or []]
             if "continue" in data:
                 cont = data["continue"]
@@ -836,7 +952,8 @@ def sync(kb: KB, client, wiki: Wiki, scope: dict, yes: bool = False, force: bool
             if not rev:
                 continue
             text = (rev.get("slots", {}).get("main", {}) or {}).get("content", rev.get("content", ""))
-            kb.save_page(title, g["pageid"], rev.get("revid"), rev.get("timestamp"), text, wiki, ns, g["categories"])
+            kb.save_page(title, g["pageid"], rev.get("revid"), rev.get("timestamp"), text, wiki, ns,
+                         g["categories"], g["portable"])
             done += 1
         log(f"  {done}/{len(todo)} saved")
         if done and done % 500 < 50:

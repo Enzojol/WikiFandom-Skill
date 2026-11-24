@@ -1,0 +1,34 @@
+# Wikis for the compatibility scorecard: one per line, `name` or `name/lang`.
+# Chosen to cover genres (games, anime, TV, film, books), languages and page structures
+# (portable infoboxes, classic templates, Lua modules, #data, wikitables).
+battlenations
+wow
+warframe
+leagueoflegends
+genshin-impact
+eldenring
+minecraft
+fallout
+witcher
+residentevil
+pokemon
+zelda
+finalfantasy
+darksouls
+hollowknight
+onepiece
+naruto
+jujutsu-kaisen
+attackontitan
+dragonball
+starwars
+marvel
+dc
+harrypotter
+lotr
+strangerthings
+simpsons
+disney
+onepiece/fr
+dragonball/es
+harrypotter/de

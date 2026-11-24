@@ -10,6 +10,7 @@ sys.path.insert(0, str(HERE / "fixtures"))
 
 import fandom_kb as fk  # noqa: E402
 from sample_wiki import PAGES, FakeClient, to_xml_dump  # noqa: E402
+from portable_wiki import PI_PAGES, PI_PROPS  # noqa: E402
 
 
 def test_resolve():
@@ -204,6 +205,60 @@ def test_data_parser_function_is_a_template():
     assert doc["infoboxes"] == [{"template": "Itemtip", "idx": 0,
                                  "fields": {"name": "Ashkandi", "quality": "epic", "slot": "Two-Hand", "dmglow": "6", "dmghigh": "10"}}]
     assert fk.parse_wikitext("{{#if:x|yes}} ok", "T")["markdown"] == "ok"  # other parser functions still skipped
+
+
+def test_portable_infobox_from_page_props():
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        res, client, _ = _sync(root, FakeClient(pages=PI_PAGES, redirects={}, pageprops=PI_PROPS))
+        assert client.content_requests == 2  # page props come with the content (+1 category continuation)
+        kb = fk.KB(root, "samplewiki")
+
+        rifle = kb.load_doc(kb.index["Pulse Rifle"])
+        box = rifle["infoboxes"][0]
+        assert box["template"] == "WeaponInfoboxAutomatic" and box["source"] == "portable"
+        assert box["fields"] == {"Class": "Rifle", "Mastery": "3", "Impact": "Impact 7.9",
+                                 "SellPrice": "5,000", "Spread": "3.50°\n(2.00° min)"}
+        assert "| Mastery | 3 |" in (kb.dir / "pages" / "Pulse_Rifle.md").read_text()
+
+        ana = kb.load_doc(kb.index["Ana"])
+        assert [b["template"] for b in ana["infoboxes"]] == ["Personaje"]       # matched by shared field names
+        assert ana["infoboxes"][0]["fields"] == {"nombre": "Ana", "raza": "Saiyan", "edad": "30",
+                                                 "altura": "1,70 m", "ki": "9,000"}  # wikitext + rendered-only fields
+        assert [t["template"] for t in ana["templates"]] == ["Quote box"]      # demoted, not an infobox
+
+        cols, rows = fk.run_sql(kb, "SELECT title, mastery, sellprice FROM weaponinfoboxautomatic")
+        assert rows == [("Pulse Rifle", 3, 5000)]
+        cols, rows = fk.run_sql(kb, "SELECT nombre, ki FROM personaje")
+        assert rows == [("Ana", 9000)]
+
+
+def test_without_page_props_the_wikitext_guess_still_applies():
+    doc = fk.parse_wikitext(PI_PAGES["Ana"], "Ana")
+    assert [b["template"] for b in doc["infoboxes"]] == ["Quote box", "Personaje"]
+    assert fk.parse_wikitext(PI_PAGES["Pulse Rifle"], "Pulse Rifle")["infoboxes"] == []
+
+
+def test_portable_infobox_drawn_by_lua_module_is_named_after_it():
+    props = [{"data": [{"type": "data", "data": {"source": "hp", "label": "HP", "value": "120"}}]}]
+    doc = fk.parse_wikitext("{{#invoke:Infobox character|main}}\nText.", "X", portable=props)
+    assert doc["infoboxes"] == [{"template": "Infobox character", "fields": {"hp": "120"}, "idx": 0, "source": "portable"}]
+    doc = fk.parse_wikitext("{{PvPItem}}\n{{ModBox}}\nText.", "X", portable=props)
+    assert doc["infoboxes"][0]["template"] == "ModBox"  # CamelCase "...Box" counts as an infobox name
+    doc = fk.parse_wikitext("Just text.", "X", portable=props + props)
+    assert len(doc["infoboxes"]) == 1  # identical boxes drawn twice are kept once
+    assert doc["infoboxes"][0]["template"] == "Infobox"  # nothing to match: generic name
+
+
+def test_unclosed_list_tags_do_not_break_templates():
+    # MediaWiki accepts <li> without </li>; mwparserfromhell then gives up on the whole template
+    text = "{{Fusion\n|nombre = Celia\n|fusionados = <li>[[Cell]]<li>[[Zarbon]]\n|raza = Bio\n|edad = 3\n}}\nTexto."
+    doc = fk.parse_wikitext(text, "Celia")
+    assert doc["infoboxes"][0]["template"] == "Fusion"
+    assert doc["infoboxes"][0]["fields"]["raza"] == "Bio" and "Cell" in doc["infoboxes"][0]["fields"]["fusionados"]
+    assert "{{" not in doc["markdown"] and doc["markdown"] == "Texto."
+    ok = fk.parse_wikitext("<ul><li>a</li><li>b</li></ul>", "T")["markdown"]
+    assert ok == "- a\n- b"  # well-formed lists are left alone
 
 
 def fk_page(title):
