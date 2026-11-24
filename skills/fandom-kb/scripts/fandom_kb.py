@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["mwparserfromhell>=0.6", "requests>=2.28", "pyyaml>=6.0"]
+# ///
 """fandom-kb — turn any Fandom / MediaWiki wiki into a local, queryable knowledge base.
 
 One knowledge base per wiki, stored under $FANDOM_KB_DIR (default ~/.fandom-kb/<wiki>/):
@@ -13,6 +17,7 @@ One knowledge base per wiki, stored under $FANDOM_KB_DIR (default ~/.fandom-kb/<
 
 Commands: fetch, import, list, search, show, sql, schema, export, profile-init, build-db
 Run `fandom_kb.py <command> -h` for details.
+Easiest: `uv run fandom_kb.py <command>` installs the dependencies declared above on the fly.
 """
 from __future__ import annotations
 
@@ -39,7 +44,8 @@ try:
     from mwparserfromhell.nodes import (Argument, Comment, ExternalLink, Heading, HTMLEntity,
                                         Tag, Template, Text, Wikilink)
 except ImportError:  # pragma: no cover
-    sys.exit("Missing dependency: pip install mwparserfromhell requests pyyaml")
+    sys.exit("Missing dependency. Run with `uv run fandom_kb.py …` (installs them automatically), "
+             "or: pip install mwparserfromhell requests pyyaml")
 
 try:
     import yaml  # optional: profiles can also be JSON
@@ -1019,6 +1025,33 @@ def rank_separator(samples: list) -> str | None:
     return None
 
 
+def column_values(kb: KB, max_distinct: int = 15, top: int = 6, max_len: int = 40) -> dict:
+    """Most common values of the low-cardinality TEXT columns of each template table: {table: {column: [(value, n)]}}.
+
+    These are the values to use verbatim in WHERE clauses (a wiki may say 'Soldier' where you'd guess 'Infantry').
+    Skipped: numeric columns, long text, and columns whose values are all different (names, ids)."""
+    out: dict[str, dict] = {}
+    db = kb.dir / "kb.sqlite"
+    if not db.exists():
+        return out
+    con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+    try:
+        for table, columns in con.execute("SELECT table_name, columns FROM template_tables").fetchall():
+            for col, typ in json.loads(columns).items():
+                if typ != "TEXT":
+                    continue
+                q = f'SELECT COUNT(*), COUNT(DISTINCT "{col}"), AVG(LENGTH("{col}")) FROM "{table}" WHERE "{col}" IS NOT NULL'
+                n, distinct, avg_len = con.execute(q).fetchone()
+                if not distinct or distinct > max_distinct or (avg_len or 0) > max_len or (distinct == n and n > 2):
+                    continue
+                rows = con.execute(f'SELECT "{col}", COUNT(*) AS c FROM "{table}" WHERE "{col}" IS NOT NULL '
+                                   f'GROUP BY 1 ORDER BY c DESC, 1 LIMIT ?', (top + 1,)).fetchall()
+                out.setdefault(table, {})[col] = [tuple(r) for r in rows]
+    finally:
+        con.close()
+    return out
+
+
 def profile_init(kb: KB, min_pages: int = 3) -> str:
     sc = schema(kb)
     out = {"wiki": kb.slug, "sitename": kb.meta.get("sitename"),
@@ -1178,14 +1211,19 @@ def main(argv=None):
         for s_ in sc.values():
             s_.pop("samples", None)  # only used to draft profiles; too long for the output
         tables = run_sql(kb, "SELECT template, table_name, rows, columns FROM template_tables ORDER BY rows DESC", 1000)[1]
+        values = column_values(kb)
         if a.json:
-            print(json.dumps({"templates": sc, "sql_tables": [dict(zip(["template", "table", "rows", "columns"], t)) for t in tables]},
-                             ensure_ascii=False, indent=1))
+            print(json.dumps({"templates": sc, "sql_tables": [
+                {**dict(zip(["template", "table", "rows"], t[:3])), "columns": json.loads(t[3]), "values": values.get(t[1], {})}
+                for t in tables]}, ensure_ascii=False, indent=1))
         else:
             print(f"{kb.meta.get('sitename')} — {len(kb.index)} pages\n\nSQL tables (query with `sql`):")
             for t in tables:
                 cols = json.loads(t[3])
                 print(f"  {t[1]}  ({t[2]} rows, from {{{{{t[0]}}}}}): " + ", ".join(f"{c}:{ty[0]}" for c, ty in list(cols.items())[:25]))
+                for c, vals in list(values.get(t[1], {}).items())[:8]:
+                    shown = ", ".join(f"{v} ({n})" for v, n in vals[:6]) + (", …" if len(vals) > 6 else "")
+                    print(f"      {c}: {shown}")
             print("  + pages, categories(title,category), links(src,dst), aliases(alias,title), pages_fts(title,body),\n"
                   "    template_values(title,template,idx,parent_template,parent_idx,field,value,num): every template field\n")
             print("Templates:")

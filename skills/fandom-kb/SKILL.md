@@ -7,8 +7,8 @@ description: Build and query a local knowledge base for any Fandom or MediaWiki 
 
 Turns one wiki into one local knowledge base (KB): clean Markdown pages, structured JSON, and a SQLite database with full-text search plus **one table per data template** (infoboxes, and stat/cost/attack templates used across pages). Answer from the KB, not from memory: wiki facts (stats, costs, patch changes) are niche and change often.
 
-CLI: `python3 <this-skill-dir>/scripts/fandom_kb.py <command>` (written `kb` below).
-Dependencies: `pip install -r <this-skill-dir>/requirements.txt` (mwparserfromhell, requests, pyyaml).
+CLI: `uv run <this-skill-dir>/scripts/fandom_kb.py <command>` (written `kb` below). uv installs the dependencies declared in the script on first run.
+Without uv: `pip install -r <this-skill-dir>/requirements.txt`, then `python3 <this-skill-dir>/scripts/fandom_kb.py <command>`.
 KBs live in `$FANDOM_KB_DIR` (default `~/.fandom-kb/<wiki>/`).
 
 ## 1. Find or create the KB
@@ -26,7 +26,7 @@ KBs live in `$FANDOM_KB_DIR` (default `~/.fandom-kb/<wiki>/`).
 - **Find pages**: `kb search <wiki> "query"` (BM25 full-text over titles and bodies; exact titles and redirects rank first).
 - **Read a page**: `kb show <wiki> "Title"` (Markdown, infobox as a table), `--section Strategy` for one section, `--json` for structured fields. Redirects and case are resolved ("HG" → "Heavy Gunner").
 - **Compare, rank, filter or compute** → use SQL, never eyeball dozens of pages:
-  1. `kb schema <wiki>` lists the SQL tables, their columns and types. Every infobox gets a table; so does any other template with named fields used on 2+ pages (stats, costs, attacks), including templates nested inside another template's parameter.
+  1. `kb schema <wiki>` lists the SQL tables, their columns and types, and the common values of short text columns: filter with those exact strings (the wiki may say `Soldier` where you'd guess `Infantry`). Every infobox gets a table; so does any other template with named fields used on 2+ pages (stats, costs, attacks), including templates nested inside another template's parameter.
   2. `kb sql <wiki> "SELECT title, cost, hp_6 FROM units WHERE type='Infantry' ORDER BY hp_6 DESC LIMIT 10"`
   - Each row has `title`, `url` and `idx` (the instance's id within its page). Nested rows also have `parent_template`, `parent_idx`, `parent_field`; join them to their parent with `ON child.title = parent.title AND child.parent_idx = parent.idx`.
   - `template_values(title, template, idx, parent_template, parent_idx, field, value, num)` holds every field of every template, tabled or not: use it for rare templates or when a column is missing.

@@ -34,11 +34,11 @@ WHERE type = 'Infantry' AND gold_cost < 2000 ORDER BY hp_6 DESC LIMIT 5;
 
 **Claude apps**: zip `skills/fandom-kb/` and upload it in *Settings → Capabilities → Skills*. Note: the app sandbox may not be allowed to reach fandom.com. In that case run `fetch` locally, or `import` an XML dump.
 
-**CLI only**:
+**CLI only** (with [uv](https://docs.astral.sh/uv/), dependencies install on first run):
 ```bash
-pip install -r skills/fandom-kb/requirements.txt
-alias kb="python3 $PWD/skills/fandom-kb/scripts/fandom_kb.py"
+alias kb="uv run $PWD/skills/fandom-kb/scripts/fandom_kb.py"
 ```
+Without uv: `pip install -r skills/fandom-kb/requirements.txt` and `alias kb="python3 $PWD/skills/fandom-kb/scripts/fandom_kb.py"`.
 
 ## Usage: Battle Nations example
 

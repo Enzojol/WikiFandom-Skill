@@ -168,6 +168,35 @@ def test_profile_init_detects_semicolon_ranks():
         assert rows == [("Heavy Gunner", 40, 70), ("Raider", 30, 50)]
 
 
+def test_schema_shows_common_text_values():
+    import contextlib, io
+    with tempfile.TemporaryDirectory() as d:
+        root = Path(d)
+        _sync(root)
+        kb = fk.KB(root, "samplewiki")
+        vals = fk.column_values(kb)
+        assert vals["infobox_unit"]["type"] == [("Infantry", 1), ("Vehicle", 1)]
+        assert vals["attackbox"]["damagetype"] == [("Piercing", 2), ("Crushing", 1)]
+        assert "name" not in vals["attackbox"]          # all distinct: not a filter column
+        assert "mindmg" not in vals["attackbox"]        # numeric columns are skipped
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            fk.main(["--root", str(root), "schema", "samplewiki"])
+        assert "damagetype: Piercing (2), Crushing (1)" in out.getvalue()
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            fk.main(["--root", str(root), "schema", "samplewiki", "--json"])
+        tables = {t["table"]: t for t in json.loads(out.getvalue())["sql_tables"]}
+        assert tables["infobox_unit"]["values"]["type"] == [["Infantry", 1], ["Vehicle", 1]]
+
+
+def test_script_declares_inline_dependencies():
+    text = (HERE.parent / "skills" / "fandom-kb" / "scripts" / "fandom_kb.py").read_text()
+    block = text.split("# /// script", 1)[1].split("# ///", 1)[0]
+    reqs = (HERE.parent / "skills" / "fandom-kb" / "requirements.txt").read_text().split()
+    assert all(r in block for r in reqs)
+
+
 def fk_page(title):
     return PAGES[title]
 
