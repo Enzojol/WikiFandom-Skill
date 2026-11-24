@@ -1,0 +1,15 @@
+{
+ "id": "jjk-005",
+ "wiki": "jujutsu-kaisen",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "How many episodes of the Jujutsu Kaisen anime use \"SPECIALZ\" as their opening theme?",
+ "answer": "**18 episodes.** \"SPECIALZ\" by King Gnu opens Season 2, episodes 6–23, which is the Shibuya Incident arc (series episodes 30–47).\n\nSource: [Tunefind](https://www.tunefind.com/song/king-gnu/specialz) lists episodes 6–23, and [AnimeCorner](https://animecorner.me/jujutsu-kaisen-season-2-reveals-shibuya-incident-opening-and-ending-videos/) confirms it debuted with the Shibuya Incident arc. Tunefind is the only source for the exact range, and I didn't check it against the official releases.",
+ "error": null,
+ "cost_usd": 0.0479072,
+ "turns": 2,
+ "seconds": 13.3,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate gives 18 episodes covering season 2 episodes 6–23 (series episodes 30–47), matching every fact in the expected answer."
+}

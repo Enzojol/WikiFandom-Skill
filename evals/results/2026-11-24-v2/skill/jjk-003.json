@@ -1,0 +1,30 @@
+{
+ "id": "jjk-003",
+ "wiki": "jujutsu-kaisen",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "According to the Jujutsu Kaisen wiki, who is taller, Yuta Okkotsu or Megumi Fushiguro? Give both heights.",
+ "answer": "**Yuta Okkotsu is taller.** He is almost 180 cm (almost 5'11\"). Megumi Fushiguro is 175 cm (5'9\").\n\nSource: the height field in the infoboxes on the Jujutsu Kaisen Wiki pages for Yuta Okkotsu and Megumi Fushiguro (jujutsu-kaisen.fandom.com), read from the local KB.",
+ "error": null,
+ "cost_usd": 0.0375973,
+ "turns": 5,
+ "seconds": 8.8,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, url, field, value FROM template_values WHERE title IN ('Yuta Okkotsu','Megumi Fushiguro') AND field LIKE '%height%'\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies Yuta Okkotsu as taller and gives both heights matching the expected answer (almost 180 cm and 175 cm)."
+}

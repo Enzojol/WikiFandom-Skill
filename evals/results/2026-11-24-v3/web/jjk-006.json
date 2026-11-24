@@ -1,0 +1,15 @@
+{
+ "id": "jjk-006",
+ "wiki": "jujutsu-kaisen",
+ "kind": "aggregate",
+ "arm": "web",
+ "question": "According to the Jujutsu Kaisen wiki, which manga arc has the most chapters, and how many?",
+ "answer": "**The Culling Game arc has the most chapters: 63 (chapters 159–221).** Shibuya Incident is next with about 58.\n\nThis comes from web search results for arc chapter ranges, not the Jujutsu Kaisen Fandom wiki itself, because the wiki page returned HTTP 402. The sources agree on this range, but I haven't checked it against the wiki.\n\nSources:\n- [All 11 Jujutsu Kaisen arcs ranked, longest to shortest (Sportskeeda)](https://www.sportskeeda.com/anime/all-11-jujutsu-kaisen-arcs-ranked-longest-shortest)\n- [Jujutsu Kaisen Arcs in Order (ComingSoon)](https://comingsoon.net/anime/news/1467639-jujutsu-kaisen-arcs-in-order-cursed-child-fearsome-womb-and-more)",
+ "error": null,
+ "cost_usd": 0.0324172,
+ "turns": 3,
+ "seconds": 14.3,
+ "denials": [],
+ "verdict": "partial",
+ "reason": "The candidate names the correct arc (Culling Game) but gives the wrong chapter range and count (159–221, 63 chapters instead of 138–221, 84 chapters)."
+}

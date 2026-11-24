@@ -1,0 +1,50 @@
+{
+ "id": "bn-005",
+ "wiki": "battlenations",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Battle Nations, which 5 player units have the highest HP at their maximum rank? Give the HP values.",
+ "answer": "**The top 5 player units by HP at max rank:**\n\n1. Monster Grouper: 775\n2. Battleship Mammoth-Class: 740\n3. Bigfoot: 720\n4. Bigfoot Shaman: 720 (tied with Bigfoot)\n5. Power Boat: 705\n\nI counted only units you can build or train from a player building. I left out four kinds of entry that rank higher on raw HP:\n- Defensive structures: Portable Wall (900), Buoy (725), Portable Electric Fence (675) and Spiderwasp Egg (675).\n- Tamed Mammoth Matriarch (825), which needs no building.\n- Specimen i02 \"Apex Mauler\" (780), which needs no building.\n- Specimen i01 \"Mauler\" (720), which needs no building.\n\nThe wiki doesn't flag these as \"player\" or \"enemy\", so that cut-off is my judgment. Without the exclusions, the Wall, Matriarch and Apex Mauler would take the top three places.\n\nSource: the Battle Nations Wiki's UnitRanksBox and UnitProfile data, from the local copy synced on 2026-11-24. Each row cites its own page, e.g. https://battlenations.fandom.com/wiki/Bigfoot.",
+ "error": null,
+ "cost_usd": 0.1286862,
+ "turns": 10,
+ "seconds": 25.9,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp, p.unit_type FROM unitranksbox r LEFT JOIN unitprofile p ON p.title=r.title LIMIT 8\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, hp_last, hp FROM unitranksbox ORDER BY hp_last DESC LIMIT 15\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, p.unit_type, i.affiliation, p.building_required, r.url FROM unitranksbox r JOIN unitprofile p ON p.title=r.title LEFT JOIN unitinfobox i ON i.title=r.title ORDER BY r.hp_last DESC LIMIT 15\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, c.category FROM unitranksbox r JOIN categories c ON c.title=r.title WHERE c.category LIKE '%Player%' ORDER BY r.hp_last DESC LIMIT 15\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT category, count(*) n FROM categories WHERE title IN ('Bigfoot','Portable Wall','Tamed Mammoth Matriarch','Monster Grouper') GROUP BY category\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate explicitly excludes defensive structures and units with no building requirement, names them with correct HP values (Portable Wall 900, Matriarch 825, Apex Mauler 780), and then gives the alternate ranking exactly as listed in the grading notes (Monster Grouper 775, Battleship Mammoth-Class 740, Bigfoot 720, Bigfoot Shaman 720, Power Boat 705)."
+}

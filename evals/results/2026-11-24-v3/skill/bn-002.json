@@ -1,0 +1,30 @@
+{
+ "id": "bn-002",
+ "wiki": "battlenations",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Battle Nations, which building, at which level, is required to train the Sniper?",
+ "answer": "The Sniper is trained in the **Barracks at level 5**, and the SpecOps Center must also be built.\n\nSource: the Sniper page on the Battle Nations Wiki (https://battlenations.fandom.com/wiki/Sniper). Its infobox lists \"Barracks level 5\" as the building required and \"SpecOps Center\" as another requirement. The KB was synced on 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0426088,
+ "turns": 5,
+ "seconds": 9.6,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show battlenations \"Sniper\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate states the Sniper is trained in the Barracks at level 5, matching the expected answer, and the extra SpecOps Center detail does not contradict it."
+}

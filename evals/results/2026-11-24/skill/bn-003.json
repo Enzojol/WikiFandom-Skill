@@ -1,0 +1,30 @@
+{
+ "id": "bn-003",
+ "wiki": "battlenations",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "In Battle Nations, which has more HP at rank 6, the Heavy Tank or the War Mammoth, and what are both values?",
+ "answer": "The War Mammoth has more HP at rank 6: 450, against 340 for the Heavy Tank.\n\nSource: the \"Statistics\" ranks tables on the Battle Nations Wiki pages for [War Mammoth](https://battlenations.fandom.com/wiki/War_Mammoth) and [Heavy Tank](https://battlenations.fandom.com/wiki/Heavy_Tank), from the local KB synced 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0613941,
+ "turns": 8,
+ "seconds": 11.3,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_016epQrfGFLbuZkVEqorh3W6",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01Gjt6EvLsPA825BxDqds8CB",
+   "tool_input": {
+    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K search battlenations \"Heavy Tank\" | head -8; uv run $K search battlenations \"War Mammoth\" | head -8"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies the War Mammoth as having more HP at rank 6 and gives both matching values (450 vs 340)."
+}

@@ -1,0 +1,30 @@
+{
+ "id": "wf-001",
+ "wiki": "warframe",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Warframe, what are the Braton's magazine size and fire rate?",
+ "answer": "The Braton has a **magazine size of 45** and a **fire rate of 8.75 attacks/sec**. Its reload time is 2.0 s.\n\nSource: the Warframe Wiki's Braton page (https://warframe.fandom.com/wiki/Braton), read from the local KB, which was synced 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.053283300000000006,
+ "turns": 5,
+ "seconds": 10.5,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show warframe \"Braton\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives magazine size 45 and fire rate 8.75 attacks/sec, matching both required facts, with extra reload detail that is acceptable."
+}

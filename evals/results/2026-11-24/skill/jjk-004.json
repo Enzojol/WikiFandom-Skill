@@ -1,0 +1,15 @@
+{
+ "id": "jjk-004",
+ "wiki": "jujutsu-kaisen",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "Which Jujutsu Kaisen manga arc has more chapters, the Shibuya Incident Arc or the Shinjuku Showdown Arc? Give the chapter ranges.",
+ "answer": "**The Shibuya Incident Arc has more chapters.** It runs chapters 79–136, which is 58 chapters. The Shinjuku Showdown Arc runs about chapters 222–271, which is about 50 chapters.\n\nThis comes from my memory of the Jujutsu Kaisen wiki's arc listings, not a live lookup. The Shinjuku start chapter (221 or 222) may be off by one, but Shibuya is longer either way.",
+ "error": null,
+ "cost_usd": 0.0209002,
+ "turns": 1,
+ "seconds": 5.0,
+ "denials": [],
+ "verdict": "partial",
+ "reason": "The conclusion (Shibuya is longer) and the Shinjuku range 222-271 (50 chapters) are right, but the Shibuya range ends at 136 instead of 137, and 79-136 is not one of the accepted ranges (79-137 or 80-137)."
+}

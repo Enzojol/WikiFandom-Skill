@@ -1,0 +1,30 @@
+{
+ "id": "jjk-002",
+ "wiki": "jujutsu-kaisen",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "What is the title of Jujutsu Kaisen manga chapter 236, and which volume collects it?",
+ "answer": "Chapter 236 is titled **\"Heading South\"** (南へ, *Minami e*), and Volume **26** collects it.\n\nSource: the Jujutsu Kaisen Wiki's Chapter 236 page, https://jujutsu-kaisen.fandom.com/wiki/Chapter_236. I read it from the local KB, which was synced on 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0442436,
+ "turns": 5,
+ "seconds": 8.5,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Chapter 236\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives the title \"Heading South\" and volume 26, matching both required facts."
+}

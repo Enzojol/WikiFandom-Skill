@@ -1,0 +1,50 @@
+{
+ "id": "jjk-004",
+ "wiki": "jujutsu-kaisen",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "Which Jujutsu Kaisen manga arc has more chapters, the Shibuya Incident Arc or the Shinjuku Showdown Arc? Give the chapter ranges.",
+ "answer": "The Shibuya Incident Arc has more chapters.\n\n- **Shibuya Incident Arc:** Chapters 79–137, which is 59 chapters.\n- **Shinjuku Showdown Arc:** Chapters 222–271, which is 50 chapters.\n\nSource: the \"Story Arcs Infobox\" on each arc's page in the local Jujutsu Kaisen Wiki knowledge base. The pages are https://jujutsu-kaisen.fandom.com/wiki/Shibuya_Incident_Arc and https://jujutsu-kaisen.fandom.com/wiki/Shinjuku_Showdown_Arc.",
+ "error": null,
+ "cost_usd": 0.07320980000000002,
+ "turns": 10,
+ "seconds": 15.4,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shibuya Incident Arc chapters\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"Shinjuku Showdown Arc chapters\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters, volumes FROM story_arcs WHERE title IN ('Shibuya Incident Arc','Shinjuku Showdown Arc')\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Shinjuku Showdown Arc\" --section Overview"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Shibuya Incident Arc\" --json"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, field, value FROM template_values WHERE template='Story Arcs Infobox' AND field='chapters' AND title IN ('Shibuya Incident Arc','Shinjuku Showdown Arc')\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives both chapter ranges and counts exactly as expected (Shibuya 79–137, 59 chapters; Shinjuku 222–271, 50 chapters) and correctly identifies Shibuya as longer."
+}

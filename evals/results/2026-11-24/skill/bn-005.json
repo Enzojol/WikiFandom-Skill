@@ -1,0 +1,37 @@
+{
+ "id": "bn-005",
+ "wiki": "battlenations",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Battle Nations, which 5 player units have the highest HP at their maximum rank? Give the HP values.",
+ "answer": "The five player units with the highest max-rank HP are:\n\n1. Specimen i02 \"Apex Mauler\": 780 (rank 9)\n2. Portable Wall: 900 (rank 6)\n3. Monster Grouper: 775 (rank 8)\n4. Battleship Mammoth-Class: 740 (rank 8)\n5. Buoy: 725 (rank 6)\n\nBy HP, the order is Portable Wall (900), Apex Mauler (780), Monster Grouper (775), Battleship Mammoth-Class (740), then Buoy (725).\n\nApex Mauler is the only one with no building requirement or unit level on its profile, so it may be a special or event unit. If you exclude it, the fifth is Bigfoot Shaman at 720 (rank 7), and Bigfoot ties it at 720. Portable Wall, Buoy and Portable Electric Fence (675) are defensive structures that the wiki lists as units.\n\nSource: the local battlenations KB, using the `unitranksbox` rank HP lists joined to `unitprofile`, which come from the Battle Nations Wiki unit pages (battlenations.fandom.com).",
+ "error": null,
+ "cost_usd": 0.1239005,
+ "turns": 13,
+ "seconds": 38.6,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01FuS43wp39UAQArD7koEnUk",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py schema battlenations | head -80"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_012scnxrguERRJKhmup4NBAk",
+   "tool_input": {
+    "command": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp FROM unitranksbox r JOIN unitprofile p ON p.title=r.title\" > /tmp/hp.txt; python3 -I - <<'E'\nrows=[]\nfor l in open('/tmp/hp.txt').read().splitlines()[2:]:\n    t,h=[x.strip() for x in l.split('|',1)]\n    v=[int(x) for x in h.replace(',','').split(';') if x.strip().isdigit()]\n    if v: rows.append((max(v),t,len(v)))\nfor r in sorted(rows,reverse=True)[:10]: print(r)\nE"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019MZ7vHxpvNLg6D53h6nauQ",
+   "tool_input": {
+    "command": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp FROM unitranksbox r JOIN unitprofile p ON p.title=r.title\" > hp.txt; python3 -I - <<'E'\nrows=[]\nfor l in open('hp.txt').read().splitlines()[2:]:\n    t,h=[x.strip() for x in l.split('|',1)]\n    v=[int(x) for x in h.replace(',','').split(';') if x.strip().isdigit()]\n    if v: rows.append((v[-1],t,len(v)))\nfor r in sorted(rows,reverse=True)[:10]: print(r)\nE"
+   }
+  }
+ ],
+ "verdict": "partial",
+ "reason": "The candidate gets Portable Wall 900, Apex Mauler 780, Monster Grouper 775 and Battleship Mammoth-Class 740 right, but it misses Tamed Mammoth Matriarch 825 and lists Buoy 725 in its place; it also doesn't fully apply the alternative exclusion reading, which would give Bigfoot, Bigfoot Shaman and Power Boat."
+}

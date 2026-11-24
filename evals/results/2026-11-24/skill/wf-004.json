@@ -1,0 +1,23 @@
+{
+ "id": "wf-004",
+ "wiki": "warframe",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "In Warframe, which deals more damage per shot on its normal attack, the Hek or the Tigris Prime? Give both values.",
+ "answer": "**The Tigris Prime deals more damage per shot: 1,560 total, against 525 for the Hek.**\n\n- Tigris Prime: 8 pellets at 195 each = 1,560.\n- Hek: 7 pellets at 75 each = 525.\n\nSource: the Warframe Wiki infobox pages for [Hek](https://warframe.fandom.com/wiki/Hek) and [Tigris Prime](https://warframe.fandom.com/wiki/Tigris_Prime), from the local KB synced 2026-11-24. Both figures are the wiki's \"Attack1Total\" for the normal attack, before mods.",
+ "error": null,
+ "cost_usd": 0.05368060000000001,
+ "turns": 6,
+ "seconds": 14.4,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01MShyS74PeNnFYDMbf7cjW3",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill; ls; ls evals/results/2026-11-24/workdir | head; ls ~/.fandom-kb 2>/dev/null | head"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies the Tigris Prime as dealing more damage per shot and gives both values, 1,560 for the Tigris Prime and 525 for the Hek, matching the expected answer."
+}

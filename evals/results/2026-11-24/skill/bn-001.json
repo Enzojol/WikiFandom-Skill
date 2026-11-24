@@ -1,0 +1,23 @@
+{
+ "id": "bn-001",
+ "wiki": "battlenations",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Battle Nations, what is the Riot Trooper's HP at each rank?",
+ "answer": "Riot Trooper HP by rank: **R1 70, R2 85, R3 105, R4 120, R5 140, R6 155**.\n\nSource: the Statistics box (`hp: 70; 85; 105; 120; 140; 155`) on https://battlenations.fandom.com/wiki/Riot_Trooper, from the local KB synced 2026-11-24.\n\nOne oddity: the page's 4.19.0 patch note lists new *armor* values of 70/85/105/120/140/155. Those are identical to the HP list, and they differ from the page's own armor row (60–90). The wiki may have a copy-paste error, so treat the HP figures with some caution.",
+ "error": null,
+ "cost_usd": 0.049444699999999994,
+ "turns": 6,
+ "seconds": 13.2,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_013g2SXo4RLRgWVzRAbeKgBj",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate gives all six HP values (70, 85, 105, 120, 140, 155) for ranks 1 to 6 exactly as expected, and its note about the conflicting armor values is accurate extra detail."
+}

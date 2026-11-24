@@ -1,0 +1,15 @@
+{
+ "id": "bn-004",
+ "wiki": "battlenations",
+ "kind": "compare",
+ "arm": "web",
+ "question": "In Battle Nations, how much gold does it cost to train a Sniper and a Riot Trooper? Which is more expensive?",
+ "answer": "**Sniper: 8,000 gold. Riot Trooper: 2,250 gold. The Sniper is more expensive, by roughly 3.5 times.**\n\nThese are the base costs at each unit's minimum Barracks level: level 5 for the Sniper and level 3 for the Riot Trooper. The cost falls as the Barracks level rises. For example, the Sniper drops to 5,600 gold at Barracks level 15.\n\nOne search summary gave different Riot Trooper figures (1,326 gold at Barracks level 3). The Miraheze page fetch gave 2,250, which I used. Both sources agree the Sniper costs much more. I couldn't open the Fandom pages directly because they returned a 402 error.\n\nSources: [Battle Nations Wiki (Miraheze): Sniper](https://battlenations.miraheze.org/wiki/Sniper), [Battle Nations Wiki (Miraheze): Riot Trooper](https://battlenations.miraheze.org/wiki/Riot_trooper)",
+ "error": null,
+ "cost_usd": 0.06346800000000001,
+ "turns": 7,
+ "seconds": 34.3,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate gives Sniper 8,000 gold and Riot Trooper 2,250 gold and correctly identifies the Sniper as more expensive, matching all required facts."
+}

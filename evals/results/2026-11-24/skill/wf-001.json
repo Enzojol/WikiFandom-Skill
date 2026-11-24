@@ -1,0 +1,15 @@
+{
+ "id": "wf-001",
+ "wiki": "warframe",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Warframe, what are the Braton's magazine size and fire rate?",
+ "answer": "**Braton:** 45 rounds per magazine, and a fire rate of 8.0 rounds/sec.\n\nSource: my own recall of the Warframe Wiki's Braton page, not checked against the wiki this session. Stats can change with game updates.",
+ "error": null,
+ "cost_usd": 0.0194882,
+ "turns": 1,
+ "seconds": 4.3,
+ "denials": [],
+ "verdict": "partial",
+ "reason": "Magazine size of 45 is correct, but the fire rate of 8.0 does not match the expected 8.75 attacks/sec."
+}

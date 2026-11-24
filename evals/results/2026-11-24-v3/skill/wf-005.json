@@ -1,0 +1,42 @@
+{
+ "id": "wf-005",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Warframe, which primary weapons have a 50% critical chance on their normal attack?",
+ "answer": "**Four primary weapons have 50% critical chance on their normal attack: Dread, Kuva Chakkhurr, Lenz and Prisma Lenz.** Dread and the two Lenz variants are bows. Kuva Chakkhurr is a rifle.\n\nSource: the WARFRAME Wiki infobox data in the local KB (`attack1critchance = 50`, slot Primary), e.g. https://warframe.fandom.com/wiki/Lenz. The KB was synced 2026-11-24. This covers each weapon's first attack, so alt-fire and charged modes aren't counted. Dread's 50% surprised me, so check its page if it matters.",
+ "error": null,
+ "cost_usd": 0.1046704,
+ "turns": 8,
+ "seconds": 19.9,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+  },
+  {
+   "tool": "Bash",
+   "input": "grep -n -i -E \"weapon|crit\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v3-workdir/7fad14cb-c555-4b71-8a29-891cf27a056a/tool-results/b1gbwo7gk.txt | cut -c1-400 | head -40"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, class, attack1critchance, url FROM weaponinfoboxautomatic WHERE attack1critchance >= 0.5 OR attack1critchance = 50 ORDER BY slot, title\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, class, attack1critchance, url FROM weaponinfoboxautomatic WHERE attack1critchance = 50 AND slot LIKE '%Primary%' ORDER BY title\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate lists all four expected weapons (Dread, Lenz, Prisma Lenz, Kuva Chakkhurr) with no extras, and correctly restricts to the normal attack."
+}

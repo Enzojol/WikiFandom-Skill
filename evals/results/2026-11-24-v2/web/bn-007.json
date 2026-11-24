@@ -1,0 +1,15 @@
+{
+ "id": "bn-007",
+ "wiki": "battlenations",
+ "kind": "multi-hop",
+ "arm": "web",
+ "question": "In Battle Nations, among the units trained at the Barracks, which unit has the attack with the highest maximum damage? Name the attack and its damage range.",
+ "answer": "**Railgun Sniper** has the highest max damage. Its attack is **High Velocity Bolt**, which does **225–375 piercing damage** at Rank 6 (max).\n\nSource: the Battle Nations Miraheze wiki. Its Units page lists the Barracks units, and its Railgun Sniper page gives the attack data. I didn't check every Barracks unit's attack table. I checked Big Game Hunter (96–144 at max rank) as a comparison, and I assumed no other unit goes higher. Per-hit damage for multi-hit attacks, such as Heavy Gunner's ×4, is lower still.",
+ "error": null,
+ "cost_usd": 0.1005197,
+ "turns": 12,
+ "seconds": 50.5,
+ "denials": [],
+ "verdict": "partial",
+ "reason": "The candidate names the right unit (Railgun Sniper), the right attack (High Velocity Bolt) and the right damage type (Piercing), but gives 225–375 damage at Rank 6 where 150–250 is expected."
+}

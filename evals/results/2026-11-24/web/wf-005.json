@@ -1,0 +1,15 @@
+{
+ "id": "wf-005",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "web",
+ "question": "In Warframe, which primary weapons have a 50% critical chance on their normal attack?",
+ "answer": "**Dread** and **Kuva Chakkhurr** are the primary weapons with a 50% critical chance on their normal attack.\n\n- **Dread:** Its uncharged shot has 50% crit chance. The wiki says quick shots share the charged shot's crit chance.\n- **Kuva Chakkhurr:** Its normal attack has 50% crit chance.\n- **Lenz and Prisma Lenz:** Only their charged shot has 50%, so I left them out.\n\nI couldn't check Tenet Quanta, because the data cut off before its attack entry.\n\nI didn't verify the Dread and Kuva Chakkhurr figures on their own wiki pages, which don't state the number. They come from a parsed read of the wiki's weapon data, and the two readings that named them are the only evidence for them. The Chakkhurr page does back this up by saying it is tied with Dread, Lenz and Nataruk for the highest crit chance of all weapons.\n\nSource: the [Warframe Wiki primary weapon data module](https://wiki.warframe.com/w/Module:Weapons/data/primary?action=raw), checked for a normal attack with `CritChance = 0.5`.",
+ "error": null,
+ "cost_usd": 0.07509300000000001,
+ "turns": 9,
+ "seconds": 35.4,
+ "denials": [],
+ "verdict": "partial",
+ "reason": "The candidate correctly names Dread and Kuva Chakkhurr but explicitly excludes Lenz and Prisma Lenz, giving 2 of the 4 required weapons."
+}

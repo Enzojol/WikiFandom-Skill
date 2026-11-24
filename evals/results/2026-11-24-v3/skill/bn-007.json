@@ -1,0 +1,34 @@
+{
+ "id": "bn-007",
+ "wiki": "battlenations",
+ "kind": "multi-hop",
+ "arm": "skill",
+ "question": "In Battle Nations, among the units trained at the Barracks, which unit has the attack with the highest maximum damage? Name the attack and its damage range.",
+ "answer": "**Railgun Sniper**'s **High Velocity Bolt** has the highest maximum damage of any Barracks unit: **150–250** Piercing damage. The next highest is Guerrilla's C4 at 144–216.\n\nSource: the local Battle Nations Wiki knowledge base. I joined the unit profile (Barracks as the required building) to the attack box data and sorted by maximum damage. The page is https://battlenations.fandom.com/wiki/Railgun_Sniper. The damage figure is the one listed for that attack's rank in the attack box (rank 1.0 in the query result).",
+ "error": null,
+ "cost_usd": 0.08827730000000002,
+ "turns": 6,
+ "seconds": 12.7,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT p.title, p.building_required, a.name, a.rank, a.mindmg, a.maxdmg, a.damagetype, a.url FROM unitprofile p JOIN attackbox a ON a.title=p.title WHERE p.building_required LIKE '%Barracks%' ORDER BY a.maxdmg DESC LIMIT 8\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate names Railgun Sniper, the High Velocity Bolt attack, and its 150–250 Piercing damage range, which matches every required fact."
+}

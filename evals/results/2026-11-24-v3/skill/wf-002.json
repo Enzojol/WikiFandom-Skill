@@ -1,0 +1,30 @@
+{
+ "id": "wf-002",
+ "wiki": "warframe",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Warframe, which Mastery Rank is required to use the Tigris Prime?",
+ "answer": "**Mastery Rank 13** is required to use the Tigris Prime.\n\nSource: the `Mastery` field in the Tigris Prime infobox on the Warframe Wiki (https://warframe.fandom.com/wiki/Tigris_Prime). I read it from the local KB, which was last synced 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0445132,
+ "turns": 5,
+ "seconds": 11.1,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show warframe \"Tigris Prime\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate states Mastery Rank 13, matching the expected answer exactly."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "wf-001",
+ "wiki": "warframe",
+ "kind": "lookup",
+ "arm": "web",
+ "question": "In Warframe, what are the Braton's magazine size and fire rate?",
+ "answer": "The base Braton has a **45-round magazine** and fires at **8.75 rounds per second**.\n\nSource: the Warframe Wiki's Braton page (wiki.warframe.com/w/Braton). Variants such as the Braton Prime and Braton Vandal have different stats.",
+ "error": null,
+ "cost_usd": 0.013580799999999999,
+ "turns": 2,
+ "seconds": 5.6,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate gives a 45-round magazine and an 8.75/sec fire rate, matching both expected facts."
+}

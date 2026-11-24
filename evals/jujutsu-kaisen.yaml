@@ -1,0 +1,39 @@
+wiki: jujutsu-kaisen
+synced_at: 2026-11-24   # full-wiki fetch; answers checked on the live wiki's rendered pages
+questions:
+  - id: jjk-001
+    kind: lookup
+    q: "According to the Jujutsu Kaisen wiki, what are Satoru Gojo's birthday and height?"
+    answer: "December 7, 1989; over 190 cm"
+    source: https://jujutsu-kaisen.fandom.com/wiki/Satoru_Gojo
+  - id: jjk-002
+    kind: lookup
+    q: "What is the title of Jujutsu Kaisen manga chapter 236, and which volume collects it?"
+    answer: "\"Heading South\", volume 26"
+    source: https://jujutsu-kaisen.fandom.com/wiki/Chapter_236
+  - id: jjk-003
+    kind: compare
+    q: "According to the Jujutsu Kaisen wiki, who is taller, Yuta Okkotsu or Megumi Fushiguro? Give both heights."
+    answer: "Yuta Okkotsu (almost 180 cm) is taller than Megumi Fushiguro (175 cm)"
+    source: https://jujutsu-kaisen.fandom.com/wiki/Yuta_Okkotsu
+  - id: jjk-004
+    kind: compare
+    q: "Which Jujutsu Kaisen manga arc has more chapters, the Shibuya Incident Arc or the Shinjuku Showdown Arc? Give the chapter ranges."
+    answer: "Shibuya Incident Arc: chapters 79-137 (59 chapters) vs Shinjuku Showdown Arc: chapters 222-271 (50 chapters); Shibuya is longer"
+    notes: "Shibuya starting at chapter 80 (58 chapters) is acceptable: the wiki splits chapter 79 between two arcs."
+    source: https://jujutsu-kaisen.fandom.com/wiki/Shibuya_Incident_Arc
+  - id: jjk-005
+    kind: aggregate
+    q: "How many episodes of the Jujutsu Kaisen anime use \"SPECIALZ\" as their opening theme?"
+    answer: "18 (episodes 30 to 47, season 2 episodes 6 to 23)"
+    source: https://jujutsu-kaisen.fandom.com/wiki/SPECIALZ
+  - id: jjk-006
+    kind: aggregate
+    q: "According to the Jujutsu Kaisen wiki, which manga arc has the most chapters, and how many?"
+    answer: "Culling Game Arc: chapters 138-221, 84 chapters"
+    source: https://jujutsu-kaisen.fandom.com/wiki/Culling_Game_Arc
+  - id: jjk-007
+    kind: multi-hop
+    q: "In Jujutsu Kaisen, who is the Japanese voice actor of the main user of the Ten Shadows Technique?"
+    answer: "Yuma Uchida (voice of Megumi Fushiguro)"
+    source: https://jujutsu-kaisen.fandom.com/wiki/Megumi_Fushiguro

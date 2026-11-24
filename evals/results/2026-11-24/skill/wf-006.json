@@ -1,0 +1,23 @@
+{
+ "id": "wf-006",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Warframe, which primary weapon with no Mastery Rank requirement (MR 0) deals the most damage per shot on its normal attack?",
+ "answer": "I checked the local Warframe wiki data and found the answer.\n\n**Nataruk** deals the most damage per shot, 450 on its normal (fully charged) attack. That is mostly Puncture, 405 of it. The next highest are the Neutralizer at 255, then the Snipetron at 180.\n\nSource: the Warframe wiki's weapon infobox data (`weaponinfoboxautomatic` table in the local KB, synced 2026-11-24), filtered to Primary weapons with Mastery Rank 0 and sorted by attack 1 total damage. The page is https://warframe.fandom.com/wiki/Nataruk. I didn't open that page, so the 450 comes only from the KB's infobox data.",
+ "error": null,
+ "cost_usd": 0.069861,
+ "turns": 7,
+ "seconds": 18.6,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01QBKefx6f7s6YUGoFM3VH8p",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list 2>&1 | head -20"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate names Nataruk with 450 damage per shot, matching both required facts in the expected answer; the extra detail does not contradict it."
+}

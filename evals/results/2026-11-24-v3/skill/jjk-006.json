@@ -1,0 +1,38 @@
+{
+ "id": "jjk-006",
+ "wiki": "jujutsu-kaisen",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "According to the Jujutsu Kaisen wiki, which manga arc has the most chapters, and how many?",
+ "answer": "**The Culling Game Arc has the most chapters, with 84 (Chapters 138–221).**\n\nSource: the Jujutsu Kaisen Wiki's Story Arcs Infobox on the [Culling Game Arc page](https://jujutsu-kaisen.fandom.com/wiki/Culling_Game_Arc). The count of 84 matches the number of chapter pages the wiki tags with that arc. The next largest are the Shibuya Incident Arc (59 chapters, 79–137) and the Shinjuku Showdown Arc (50 chapters, 222–271).",
+ "error": null,
+ "cost_usd": 0.0785978,
+ "turns": 7,
+ "seconds": 15.8,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema jujutsu-kaisen"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, chapters, url FROM story_arcs_infobox\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT arc, COUNT(*) n FROM chapter_infobox GROUP BY arc ORDER BY n DESC\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate names the Culling Game Arc with 84 chapters spanning 138–221, matching every required fact in the expected answer."
+}

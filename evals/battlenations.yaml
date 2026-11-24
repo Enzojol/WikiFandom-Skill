@@ -1,9 +1,41 @@
 wiki: battlenations
-synced_at: null   # fill after `kb fetch battlenations`
+synced_at: 2026-11-24   # full-wiki fetch; answers checked on the live wiki (rendered page or page source)
 questions:
-  - {id: bn-001, kind: lookup,    q: "Which building trains the Heavy Gunner?", answer: TODO, source: TODO}
-  - {id: bn-002, kind: lookup,    q: "What is a unit's PvP value and how does it affect matchmaking?", answer: TODO, source: TODO}
-  - {id: bn-003, kind: compare,   q: "Compare the two cheapest vehicle units: cost, HP and armor.", answer: TODO, source: TODO}
-  - {id: bn-004, kind: aggregate, q: "List the 5 infantry units with the highest HP at max rank.", answer: TODO, source: TODO}
-  - {id: bn-005, kind: aggregate, q: "How many units can be trained at each building?", answer: TODO, source: TODO}
-  - {id: bn-006, kind: multi-hop, q: "Which units are strong against the unit that the Barracks unlocks first?", answer: TODO, source: TODO}
+  - id: bn-001
+    kind: lookup
+    q: "In Battle Nations, what is the Riot Trooper's HP at each rank?"
+    answer: "70, 85, 105, 120, 140, 155 (ranks 1 to 6)"
+    notes: "The page contradicts itself: the rank table labels 70-155 as HP, but the profile box shows HP 90 / Armor 155 and a patch note calls 70-155 armor. Also correct: 60, 65, 70, 80, 85, 90 when the answer explicitly points out this inconsistency. Added after the first run."
+    source: https://battlenations.fandom.com/wiki/Riot_Trooper
+  - id: bn-002
+    kind: lookup
+    q: "In Battle Nations, which building, at which level, is required to train the Sniper?"
+    answer: "Barracks level 5"
+    source: https://battlenations.fandom.com/wiki/Sniper
+  - id: bn-003
+    kind: compare
+    q: "In Battle Nations, which has more HP at rank 6, the Heavy Tank or the War Mammoth, and what are both values?"
+    answer: "War Mammoth: 450 HP vs Heavy Tank: 340 HP at rank 6"
+    source: https://battlenations.fandom.com/wiki/War_Mammoth
+  - id: bn-004
+    kind: compare
+    q: "In Battle Nations, how much gold does it cost to train a Sniper and a Riot Trooper? Which is more expensive?"
+    answer: "Sniper 8,000 gold, Riot Trooper 2,250 gold: the Sniper is more expensive"
+    source: https://battlenations.fandom.com/wiki/Sniper
+  - id: bn-005
+    kind: aggregate
+    q: "In Battle Nations, which 5 player units have the highest HP at their maximum rank? Give the HP values."
+    answer: "Portable Wall 900, Tamed Mammoth Matriarch 825, Specimen i02 \"Apex Mauler\" 780, Monster Grouper 775, Battleship Mammoth-Class 740"
+    notes: "Player units = units with a unit profile and rank table. Order and values matter; at least 4 of 5 right with values = partial. The question is ambiguous: an answer that explicitly excludes defensive structures (walls, buoys) and units with no building requirement, names them with their HP, and then ranks the rest is also correct (Monster Grouper 775, Battleship Mammoth-Class 740, Bigfoot 720, Bigfoot Shaman 720, Power Boat 705). Added after the first run."
+    source: https://battlenations.fandom.com/wiki/Portable_Wall
+  - id: bn-006
+    kind: aggregate
+    q: "In Battle Nations, how many units require the Barracks (any level) to be trained, according to the wiki?"
+    answer: "61"
+    notes: "Counted from each unit page's 'building required' field. 55 to 67 = partial; otherwise wrong."
+    source: https://battlenations.fandom.com/wiki/Barracks
+  - id: bn-007
+    kind: multi-hop
+    q: "In Battle Nations, among the units trained at the Barracks, which unit has the attack with the highest maximum damage? Name the attack and its damage range."
+    answer: "Railgun Sniper, High Velocity Bolt, 150-250 damage (Piercing)"
+    source: https://battlenations.fandom.com/wiki/Railgun_Sniper

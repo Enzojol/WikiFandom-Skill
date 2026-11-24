@@ -1,0 +1,38 @@
+{
+ "id": "wf-006",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Warframe, which primary weapon with no Mastery Rank requirement (MR 0) deals the most damage per shot on its normal attack?",
+ "answer": "Checking the wiki data: I've found a likely answer and am writing it up now.\n\n**Nataruk**, a bow with 450 damage per shot, mostly Puncture. It's the highest of the MR 0 primaries in the KB.\n\nThe only higher entry is the \"Neutralizer\", at 255. That's an Exalted ability weapon, not a normal primary, and Nataruk beats it anyway. Next are the MK1-Strun and Snipetron at 180 each. The Strun's 180 is spread over 10 pellets.\n\nSource: the WARFRAME Wiki weapon infoboxes (`attack1total`, `mastery` = 0, slot = Primary), queried from the local KB, e.g. https://warframe.fandom.com/wiki/Nataruk. The KB was synced 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0696013,
+ "turns": 7,
+ "seconds": 16.3,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+  },
+  {
+   "tool": "Bash",
+   "input": "grep -n -i -E \"weapon|mastery\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v2-workdir/8a0915e5-b525-44e1-9354-cba249534b30/tool-results/bamdvsagq.txt | cut -c1-600"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, class, slot, mastery, attack1total, attack1multishot, trigger FROM weaponinfoboxautomatic WHERE mastery=0 AND slot LIKE '%Primary%' ORDER BY CAST(attack1total AS REAL) DESC LIMIT 15\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate names Nataruk with 450 damage per shot, matching the expected answer. Its aside calling the 255-damage Neutralizer a 'higher entry' is self-contradictory but does not change the answer."
+}

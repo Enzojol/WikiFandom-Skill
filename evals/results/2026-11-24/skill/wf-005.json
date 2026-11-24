@@ -1,0 +1,30 @@
+{
+ "id": "wf-005",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Warframe, which primary weapons have a 50% critical chance on their normal attack?",
+ "answer": "**Four primary weapons have a 50% critical chance on their normal attack:**\n- Dread (Bow)\n- Lenz (Bow)\n- Prisma Lenz (Bow)\n- Kuva Chakkhurr (Rifle)\n\nArquebex, Desert Wind and Epitaph Prime also show 50%. They are an Archgun, an Exalted melee weapon and a Secondary, so they aren't primaries.\n\nSource: the local Warframe wiki KB, a SQL query on the `{{WeaponInfoboxAutomatic}}` infobox (`attack1critchance`, slot = Primary), synced 2026-11-24. Pages are at https://warframe.fandom.com/wiki/Dread, /Lenz, /Prisma_Lenz and /Kuva_Chakkhurr.",
+ "error": null,
+ "cost_usd": 0.06916040000000001,
+ "turns": 8,
+ "seconds": 15.7,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01KHthUDMCHtCGZ6f3PwMyJh",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill && uv run skills/fandom-kb/scripts/fandom_kb.py list"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01MxakxG6nZWHyy3RmxesnA8",
+   "tool_input": {
+    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema warframe | grep -i -E \"weapon|crit\" | head -30"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate lists all four expected primaries (Dread, Lenz, Prisma Lenz, Kuva Chakkhurr) at 50% normal-attack crit chance and correctly excludes the non-primary weapons that also show 50%."
+}

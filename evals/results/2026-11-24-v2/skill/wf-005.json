@@ -1,0 +1,38 @@
+{
+ "id": "wf-005",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Warframe, which primary weapons have a 50% critical chance on their normal attack?",
+ "answer": "Checking the KB's weapon table turned up four primary weapons at 50% crit chance. I'll answer now.\n\n**Primary weapons with 50% critical chance on their normal attack:**\n- Dread (bow)\n- Lenz (bow)\n- Prisma Lenz (bow)\n- Kuva Chakkhurr (rifle)\n\nArquebex (Archgun), Desert Wind (Exalted melee) and Epitaph Prime (secondary) also show 50%, but they aren't primaries.\n\nSource: the local Warframe wiki KB, in the `weaponinfoboxautomatic` table (`attack1critchance = 50`, slot Primary). The pages are at https://warframe.fandom.com/wiki/Dread, /wiki/Lenz, /wiki/Prisma_Lenz and /wiki/Kuva_Chakkhurr. The KB was last synced 2026-11-24. I only searched that one weapon table, so a weapon listed under another template could be missing.",
+ "error": null,
+ "cost_usd": 0.058719999999999994,
+ "turns": 7,
+ "seconds": 18.6,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+  },
+  {
+   "tool": "Bash",
+   "input": "grep -n -i -E \"crit\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v2-workdir/5c78679d-e9f1-479c-91bf-7b92dcdf2ab2/tool-results/bw4fngak6.txt | cut -c1-600 | head -20"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, class, attack1critchance, url FROM weaponinfoboxautomatic WHERE attack1critchance IN (0.5,50) ORDER BY title\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate lists all four expected primary weapons (Dread, Lenz, Prisma Lenz, Kuva Chakkhurr) with 50% normal-attack critical chance and correctly excludes non-primary weapons."
+}

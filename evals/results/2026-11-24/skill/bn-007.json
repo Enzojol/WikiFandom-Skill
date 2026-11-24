@@ -1,0 +1,23 @@
+{
+ "id": "bn-007",
+ "wiki": "battlenations",
+ "kind": "multi-hop",
+ "arm": "skill",
+ "question": "In Battle Nations, among the units trained at the Barracks, which unit has the attack with the highest maximum damage? Name the attack and its damage range.",
+ "answer": "The **Railgun Sniper**'s **High Velocity Bolt** has the highest maximum damage among Barracks-trained units, at **150–250** Piercing damage.\n\nSource: the Battle Nations Wiki KB I synced locally (AttackBox and UnitProfile data, filtered to units whose building requirement is the Barracks). Railgun Sniper needs Barracks level 10. The next highest is Guerrilla's C4 at 144–216, so the Railgun Sniper's lead is clear.\n\nThe query only returned one rank row per attack, so a higher rank might show a larger range. I didn't check that.",
+ "error": null,
+ "cost_usd": 0.06589320000000001,
+ "turns": 7,
+ "seconds": 13.1,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01DKVt4dNf9naHaZSU1FHrDK",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py schema battlenations | head -80"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate names the Railgun Sniper's High Velocity Bolt with 150–250 Piercing damage, matching every expected fact; the caveat about unchecked higher ranks does not contradict the answer."
+}

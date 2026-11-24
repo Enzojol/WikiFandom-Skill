@@ -1,0 +1,15 @@
+{
+ "id": "wf-002",
+ "wiki": "warframe",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Warframe, which Mastery Rank is required to use the Tigris Prime?",
+ "answer": "**Mastery Rank 13.**\n\nSource: web search results citing the Warframe Fandom wiki's weapon data, which lists Tigris Prime at MR 13 (base Tigris is MR 7). I couldn't open the wiki page directly, and I found no official patch note confirming the current value.\n\nSources:\n- [Warframe Fandom wiki: Tigris Prime](https://warframe.fandom.com/wiki/Tigris_Prime)\n- [Warframe: Tigris Prime Builds (2026)](https://progametalk.com/?p=1947)\n- [Steam discussion](https://steamcommunity.com/app/230410/discussions/0/1742231705662033001)",
+ "error": null,
+ "cost_usd": 0.0450153,
+ "turns": 3,
+ "seconds": 14.1,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate states Mastery Rank 13, matching the expected answer; the extra detail about base Tigris being MR 7 does not contradict it."
+}

@@ -74,6 +74,22 @@ Other wikis: `kb fetch onepiece --lang fr`, `kb fetch https://terraria.wiki.gg/w
 
 Every wiki names its fields its own way. A profile (`skills/fandom-kb/profiles/<wiki>.yaml`) maps the raw infobox fields to clean, typed columns (see [`_example.yaml`](skills/fandom-kb/profiles/_example.yaml)). `profile-init` drafts one in seconds; a human makes it right once, and then everybody benefits. **PRs adding profiles are the most valuable contribution.**
 
+## Does it help? Evals
+
+21 questions on 3 wikis (Battle Nations, Jujutsu Kaisen, Warframe), answers checked on the live wiki, each asked twice to Claude Sonnet through `claude -p`: with web search only, and with web search plus fandom-kb ([`evals/`](evals/)).
+
+| | web only | with fandom-kb |
+|---|---|---|
+| overall | 62% | **98%** |
+| lookup | 67% | 100% |
+| compare | 92% | 100% |
+| aggregate (rank, count, filter) | 33% | 92% |
+| multi-hop | 50% | 100% |
+| avg time per answer | 24 s | 13 s |
+| avg cost per answer | $0.053 | $0.061 |
+
+Without the skill, Claude can't even open Fandom pages (WebFetch gets HTTP 402) and answers from search snippets, mirrors and memory: fine for famous lore, wrong for counts, rankings and niche stats. Full reports with every answer and verdict: [`evals/results/`](evals/results/). One run of 21 questions, so treat the numbers as a strong signal, not a benchmark; the judge itself moves a few points between gradings.
+
 ## Compatibility
 
 Wikis are messy: every one names, nests and generates its data differently. So compatibility is measured, not assumed. [`docs/compatibility.md`](docs/compatibility.md) is a scorecard over 31 Fandom wikis (games, anime, TV, film, books; English, French, Spanish, German) built by running the real pipeline on 20 random articles each.
@@ -90,7 +106,7 @@ Latest run: all 31 wikis work end to end. **Recall is 98%**: of the articles tha
 
 - [ ] `kb pull <wiki>`: download prebuilt, versioned KBs (GitHub Releases / Hugging Face) instead of scraping
 - [ ] MCP server (`search`, `show`, `sql`, `schema` tools) for Claude Desktop, Cursor and others
-- [ ] Evals per wiki: questions with known answers, scored with vs. without the skill (`evals/`)
+- [x] Evals: questions with known answers, scored with vs. without the skill (`evals/`); next: more wikis and question types
 - [ ] Incremental sync via `recentchanges`; Lua `Module:` data tables; cargo/SMW tables when a wiki has them
 - [ ] Community profiles for popular wikis
 

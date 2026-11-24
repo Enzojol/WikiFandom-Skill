@@ -1,0 +1,30 @@
+{
+ "id": "bn-006",
+ "wiki": "battlenations",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Battle Nations, how many units require the Barracks (any level) to be trained, according to the wiki?",
+ "answer": "**61 units** require the Barracks (any level) to be trained.\n\nSource: the Battle Nations wiki's `{{UnitProfile}}` template. I counted distinct unit pages whose `building_required` field starts with \"Barracks\" (levels 1–11) in the local KB, synced 2026-11-24 from https://battlenations.fandom.com. The wiki has 294 unit profiles, and 104 of them have no building listed. Units missing that field wouldn't be in the count.",
+ "error": null,
+ "cost_usd": 0.058616100000000004,
+ "turns": 9,
+ "seconds": 13.7,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019WQK8moYvYDJmuS6KJdqQT",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01MNk44nHKSnD2fTbih5WtK5",
+   "tool_input": {
+    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema battlenations | grep -i -B2 -A30 \"unit\" | head -80"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate states 61 units, exactly matching the expected count."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "bn-006",
+ "wiki": "battlenations",
+ "kind": "aggregate",
+ "arm": "web",
+ "question": "In Battle Nations, how many units require the Barracks (any level) to be trained, according to the wiki?",
+ "answer": "I couldn't get a reliable count. The Battle Nations wiki blocked my direct fetches (HTTP 402), and the shell and grep tools were disabled, so I couldn't check your local `battlenations.yaml`.\n\nSearch results from the wiki showed at least 10 Barracks units: Grenadier, Shock Trooper, Arsonist, Mortar Team, Ranger, Saboteur, Armadillo, Bazooka Squad, Demolitionist and Commando. That is only a partial list, so 10 is a lower bound, not the answer.\n\nIf you enable shell or file-read access, I can count the units from `battlenations.yaml`.\n\nSources: [Commando](https://battlenations.fandom.com/wiki/Commando), [Ranger](https://battlenations.fandom.com/wiki/Ranger), [Grenadier](https://battlenations.fandom.com/wiki/Grenadier), [Saboteur](https://battlenations.fandom.com/wiki/Saboteur)",
+ "error": null,
+ "cost_usd": 0.06277,
+ "turns": 8,
+ "seconds": 30.0,
+ "denials": [],
+ "verdict": "wrong",
+ "reason": "The candidate says it couldn't get a reliable count and offers only a lower bound of 10, which is far outside the 55–67 partial range and not the expected 61."
+}

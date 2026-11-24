@@ -1,0 +1,15 @@
+{
+ "id": "wf-004",
+ "wiki": "warframe",
+ "kind": "compare",
+ "arm": "web",
+ "question": "In Warframe, which deals more damage per shot on its normal attack, the Hek or the Tigris Prime? Give both values.",
+ "answer": "**The Tigris Prime deals more damage per shot.** Its normal attack does 1,560 damage per shot (8 pellets × 195). The Hek's does 525 (7 pellets × 75).\n\nThese are base totals with every pellet hitting at close range. Both guns lose damage with distance.\n\nSource: the Warframe Wiki pages for the Hek and the Tigris Prime. I read only the first 100,000 characters of each page, which covered the normal-attack stats.",
+ "error": null,
+ "cost_usd": 0.0259121,
+ "turns": 3,
+ "seconds": 11.3,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies the Tigris Prime as dealing more damage per shot and gives both values matching the expected answer (1,560 vs 525)."
+}

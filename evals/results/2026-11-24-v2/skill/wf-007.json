@@ -1,0 +1,38 @@
+{
+ "id": "wf-007",
+ "wiki": "warframe",
+ "kind": "multi-hop",
+ "arm": "skill",
+ "question": "In Warframe, which shotgun deals the most total damage per shot on its normal attack, and which Mastery Rank does it require?",
+ "answer": "I'm checking the KB's weapon table. Two shotguns tie at the top, so I'll report both.\n\n**Two shotguns tie at 760 total damage per shot on the normal attack:**\n- **Felarx** needs Mastery Rank 14. It fires 4 projectiles of 190 damage each.\n- **Tenet Arca Plasmor** needs Mastery Rank 16. It fires 1 projectile of 760 damage.\n\nIf you want a single answer, Tenet Arca Plasmor is the one with the highest damage in a single hit, at MR 16.\n\nSource: the WARFRAME Wiki weapon infobox data (`weaponinfoboxautomatic` table, class Shotgun, `attack1total`), from the local KB synced 2026-11-24, at https://warframe.fandom.com. The next highest are Strun Prime (648) and Kuva Hek (609).",
+ "error": null,
+ "cost_usd": 0.06300439999999999,
+ "turns": 7,
+ "seconds": 19.9,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+  },
+  {
+   "tool": "Bash",
+   "input": "grep -n -i -E \"^  \\w+ +\\(.*(shotgun|total_damage|mastery)\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v2-workdir/0805283d-4ec2-4e42-8176-11859d132ba2/tool-results/bpvy7x0lo.txt | cut -c1-1500"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, class, mastery, attack1total, attack1multishot, shottype FROM weaponinfoboxautomatic WHERE class LIKE '%Shotgun%' ORDER BY CAST(attack1total AS REAL) DESC LIMIT 12\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "wrong",
+ "reason": "The candidate names Felarx and Tenet Arca Plasmor at 760 damage instead of Exergis at 1,620 damage with Mastery Rank 8, so the main fact and both numbers are wrong."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "bn-001",
+ "wiki": "battlenations",
+ "kind": "lookup",
+ "arm": "web",
+ "question": "In Battle Nations, what is the Riot Trooper's HP at each rank?",
+ "answer": "Verified the HP table on the Miraheze page. I'm giving the final answer now.\n\n**Riot Trooper HP by rank:** R1 60, R2 65, R3 70, R4 80, R5 85, R6 90.\n\nSource: the Statistics table on the Battle Nations Miraheze wiki's Riot Trooper page. The Fandom wiki gave the same figures in search results, but Fandom returned HTTP 402 when I fetched it, so I couldn't open that page myself.\n\nSources:\n- [Riot Trooper – Battle Nations (Miraheze)](https://battlenations.miraheze.org/wiki/Riot_Trooper)\n- [Riot Trooper – Battle Nations (Fandom)](https://battlenations.fandom.com/wiki/Riot_Trooper)",
+ "error": null,
+ "cost_usd": 0.056491000000000006,
+ "turns": 6,
+ "seconds": 25.0,
+ "denials": [],
+ "verdict": "wrong",
+ "reason": "The candidate gives 60, 65, 70, 80, 85, 90 without noting the page's HP/armor inconsistency, which the grading notes require for that alternative to count, and it doesn't match the expected 70-155 values."
+}

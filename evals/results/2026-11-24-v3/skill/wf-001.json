@@ -1,0 +1,30 @@
+{
+ "id": "wf-001",
+ "wiki": "warframe",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Warframe, what are the Braton's magazine size and fire rate?",
+ "answer": "**Braton:** magazine size is **45 rounds**, and fire rate is **8.75 attacks/sec**.\n\nSource: the WARFRAME Wiki \"Braton\" page (https://warframe.fandom.com/wiki/Braton), from the local KB synced 2026-11-24. The 45-round magazine is the standard value. In Conclave (PvP) it is 30.",
+ "error": null,
+ "cost_usd": 0.050485199999999994,
+ "turns": 5,
+ "seconds": 11.0,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show warframe \"Braton\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives magazine size 45 and fire rate 8.75 attacks/sec, matching both expected facts; the extra Conclave detail does not contradict them."
+}

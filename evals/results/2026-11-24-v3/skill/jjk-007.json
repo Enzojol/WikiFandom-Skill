@@ -1,0 +1,17 @@
+{
+ "id": "jjk-007",
+ "wiki": "jujutsu-kaisen",
+ "kind": "multi-hop",
+ "arm": "skill",
+ "question": "In Jujutsu Kaisen, who is the Japanese voice actor of the main user of the Ten Shadows Technique?",
+ "answer": "**Yuma Uchida** voices Megumi Fushiguro, the main user of the Ten Shadows Technique, in Japanese.\n\nThis is from my own knowledge of the anime's cast. I didn't check it against the wiki or the fandom-kb skill.",
+ "error": null,
+ "cost_usd": 0.015345300000000001,
+ "turns": 1,
+ "seconds": 4.9,
+ "denials": [],
+ "tools": [],
+ "used_kb": false,
+ "verdict": "correct",
+ "reason": "The candidate correctly names Yuma Uchida as the Japanese voice actor of Megumi Fushiguro, the main Ten Shadows Technique user."
+}

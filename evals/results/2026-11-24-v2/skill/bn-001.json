@@ -1,0 +1,30 @@
+{
+ "id": "bn-001",
+ "wiki": "battlenations",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Battle Nations, what is the Riot Trooper's HP at each rank?",
+ "answer": "**Riot Trooper HP by rank: 60, 65, 70, 80, 85, 90 (ranks 1–6).**\n\nThe wiki page has a labeling problem. Its stats box lists `hp: 70; 85; 105; 120; 140; 155` and `armor: 60; 65; 70; 80; 85; 90`. I think those two rows are swapped, for two reasons:\n- The infobox shows HP 90 and Armor 155, which are the rank 6 values of the two rows as I've swapped them.\n- The 4.19.0 patch note says armor rose to 70, 85, 105, 120, 140 and 155, which is the row labeled `hp`.\n\nSo the 60–90 row is HP and the 70–155 row is armor. This is my reading of the page, not something the wiki states.\n\nSource: https://battlenations.fandom.com/wiki/Riot_Trooper (local KB, synced 2026-11-24).",
+ "error": null,
+ "cost_usd": 0.0505814,
+ "turns": 5,
+ "seconds": 11.9,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show battlenations \"Riot Trooper\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives 60, 65, 70, 80, 85, 90 and explicitly explains the page's HP/armor labeling inconsistency, which the grading notes accept as correct."
+}

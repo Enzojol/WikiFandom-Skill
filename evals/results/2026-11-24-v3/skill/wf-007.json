@@ -1,0 +1,38 @@
+{
+ "id": "wf-007",
+ "wiki": "warframe",
+ "kind": "multi-hop",
+ "arm": "skill",
+ "question": "In Warframe, which shotgun deals the most total damage per shot on its normal attack, and which Mastery Rank does it require?",
+ "answer": "Exergis has the highest total damage per shot on its normal attack, at 1,620, and it requires Mastery Rank 8. The next highest is Tigris Prime at 1,560 (MR 13).\n\nSource: the local WARFRAME Wiki KB (`weaponinfoboxautomatic` table, shotgun classes ranked by `attack1total`): https://warframe.fandom.com/wiki/Exergis",
+ "error": null,
+ "cost_usd": 0.0590296,
+ "turns": 7,
+ "seconds": 19.0,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+  },
+  {
+   "tool": "Bash",
+   "input": "grep -n -i -E \"shotgun|total_damage|weapon\" /Users/enzojolivet/.claude/projects/-Users-enzojolivet-Code-Fandom-Skill-evals-results-2026-11-24-v3-workdir/7e0ca895-5978-490a-8a6d-e42249a002d6/tool-results/bcst6osu1.txt | cut -c1-600 | head -30"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, class, mastery, attack1total, attack1total_num, url FROM weaponinfoboxautomatic WHERE class LIKE '%Shotgun%' ORDER BY attack1total_num DESC LIMIT 10\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate names Exergis with 1,620 damage per shot and Mastery Rank 8, matching every expected fact, and mentions Tigris Prime only as the runner-up rather than as the answer."
+}

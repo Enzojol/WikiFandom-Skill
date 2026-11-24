@@ -1,0 +1,30 @@
+{
+ "id": "jjk-006",
+ "wiki": "jujutsu-kaisen",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "According to the Jujutsu Kaisen wiki, which manga arc has the most chapters, and how many?",
+ "answer": "**The Culling Game Arc has the most chapters, with 84 (Chapters 138–221).**\n\nThe source is the wiki's Story Arcs Infobox for that arc, which gives the range 138–221. The count of chapter pages tagged with the arc agrees at 84. The next largest is the Shibuya Incident Arc with 58 (Chapters 79–137): https://jujutsu-kaisen.fandom.com/wiki/Culling_Game_Arc (KB synced 2026-11-24).",
+ "error": null,
+ "cost_usd": 0.08650190000000002,
+ "turns": 9,
+ "seconds": 16.6,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_019RQXYPdqh8uMjmxH2sajMb",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01H8mmj2dqwTvPU8LsyXPLzm",
+   "tool_input": {
+    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K schema jujutsu-kaisen | head -80; uv run $K search jujutsu-kaisen \"arc chapters\" | head -20"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate names the Culling Game Arc with 84 chapters spanning 138–221, matching every required fact in the expected answer, with only extra correct detail added."
+}

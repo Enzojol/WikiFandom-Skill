@@ -1,0 +1,40 @@
+wiki: warframe
+synced_at: 2026-11-24   # full-wiki fetch; answers checked on the live wiki's rendered pages
+questions:
+  - id: wf-001
+    kind: lookup
+    q: "In Warframe, what are the Braton's magazine size and fire rate?"
+    answer: "Magazine 45, fire rate 8.75 attacks/sec"
+    source: https://warframe.fandom.com/wiki/Braton
+  - id: wf-002
+    kind: lookup
+    q: "In Warframe, which Mastery Rank is required to use the Tigris Prime?"
+    answer: "Mastery Rank 13"
+    source: https://warframe.fandom.com/wiki/Tigris_Prime
+  - id: wf-003
+    kind: compare
+    q: "In Warframe, compare the critical chance of the Soma Prime and the Braton Prime (normal attack)."
+    answer: "Soma Prime 30% vs Braton Prime 12%"
+    source: https://warframe.fandom.com/wiki/Soma_Prime
+  - id: wf-004
+    kind: compare
+    q: "In Warframe, which deals more damage per shot on its normal attack, the Hek or the Tigris Prime? Give both values."
+    answer: "Tigris Prime 1,560 vs Hek 525"
+    source: https://warframe.fandom.com/wiki/Tigris_Prime
+  - id: wf-005
+    kind: aggregate
+    q: "In Warframe, which primary weapons have a 50% critical chance on their normal attack?"
+    answer: ["Dread", "Lenz", "Prisma Lenz", "Kuva Chakkhurr"]
+    notes: "All four needed for correct; 2-3 of them = partial. Weapons above 50% on the normal attack would be wrong; Incarnon or alternate fire values don't count."
+    source: https://warframe.fandom.com/wiki/Lenz
+  - id: wf-006
+    kind: aggregate
+    q: "In Warframe, which primary weapon with no Mastery Rank requirement (MR 0) deals the most damage per shot on its normal attack?"
+    answer: "Nataruk, 450 damage"
+    source: https://warframe.fandom.com/wiki/Nataruk
+  - id: wf-007
+    kind: multi-hop
+    q: "In Warframe, which shotgun deals the most total damage per shot on its normal attack, and which Mastery Rank does it require?"
+    answer: "Exergis, 1,620 damage per shot, Mastery Rank 8"
+    notes: "Tigris Prime (1,560, MR 13) is a close second: naming it is wrong."
+    source: https://warframe.fandom.com/wiki/Exergis

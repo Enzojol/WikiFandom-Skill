@@ -1,0 +1,15 @@
+{
+ "id": "wf-006",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "web",
+ "question": "In Warframe, which primary weapon with no Mastery Rank requirement (MR 0) deals the most damage per shot on its normal attack?",
+ "answer": "**MK1-Paris** is my answer. It has no Mastery Rank requirement and deals 230 damage per fully charged shot, or 115 uncharged. The Snipetron is next at 180 per shot, also MR 0.\n\nI didn't check every MR 0 primary. The wiki's weapon data was too long to read in full, and I never saw entries for Boltor, Dread, Penta, Tigris, Simulor, Synapse or Daikyu. The ones I did check are either higher than MR 0 (Vectis MR 2, Tonkor MR 5, Ogris MR 9, Lenz MR 8, Opticor MR 14) or do less damage per shot.\n\nSource: the Warframe Wiki pages for [MK1-Paris](https://wiki.warframe.com/w/MK1-Paris) and [Snipetron](https://wiki.warframe.com/w/Snipetron), plus its [primary weapon data](https://wiki.warframe.com/w/Module:Weapons/data/primary).",
+ "error": null,
+ "cost_usd": 0.15041119999999997,
+ "turns": 12,
+ "seconds": 70.5,
+ "denials": [],
+ "verdict": "wrong",
+ "reason": "The candidate names MK1-Paris (230 damage) instead of the expected Nataruk with 450 damage, so the main fact is wrong."
+}

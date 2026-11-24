@@ -1,0 +1,23 @@
+{
+ "id": "jjk-001",
+ "wiki": "jujutsu-kaisen",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "According to the Jujutsu Kaisen wiki, what are Satoru Gojo's birthday and height?",
+ "answer": "Satoru Gojo's birthday is **December 7, 1989**, and his height is **over 190 cm (over 6'3\")**.\n\nSource: the infobox on the Jujutsu Kaisen Wiki page for Satoru Gojo (https://jujutsu-kaisen.fandom.com/wiki/Satoru_Gojo), from the local copy synced 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0438677,
+ "turns": 6,
+ "seconds": 10.3,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01TSUSyFApmjKQG4okUA724y",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list; uv run scripts/fandom_kb.py show jujutsu-kaisen \"Satoru Gojo\" 2>&1 | head -60"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate gives both required facts, December 7, 1989 for the birthday and over 190 cm for the height, and the added imperial conversion is extra detail that does not change the answer."
+}

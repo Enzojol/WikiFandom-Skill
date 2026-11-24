@@ -1,0 +1,42 @@
+{
+ "id": "bn-005",
+ "wiki": "battlenations",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Battle Nations, which 5 player units have the highest HP at their maximum rank? Give the HP values.",
+ "answer": "The top 5 player units by HP at max rank are:\n\n1. Tamed Mammoth Matriarch: 825\n2. Monster Grouper: 775\n3. Battleship Mammoth-Class: 740\n4. Bigfoot: 720 (tied)\n5. Bigfoot Shaman: 720 (tied)\n\nI treated the \"Ignorable-Defense\" entries as structures and left them out. These are Portable Wall at 900, Buoy at 725 and Portable Electric Fence at 675. If you count them, Portable Wall takes first place and Buoy comes in fourth. I also left out the enemy-only Specimen i01 \"Mauler\" and i02 \"Apex Mauler\" (720 and 780).\n\nSource: the `UnitRanksBox` HP rank lists on each unit's page in the local Battle Nations Wiki KB (https://battlenations.fandom.com), synced 2026-11-24. Player units are the pages that also have a `UnitProfile` infobox.",
+ "error": null,
+ "cost_usd": 0.11583000000000002,
+ "turns": 8,
+ "seconds": 22.2,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp, p.unit_type, p.unit_level FROM unitranksbox r LEFT JOIN unitprofile p ON p.title=r.title LIMIT 8\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp_last, p.unit_type, p.unit_level, p.building_required FROM unitranksbox r JOIN unitprofile p ON p.title=r.title ORDER BY r.hp_last DESC LIMIT 12\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT r.title, r.hp, r.hp_last, p.unit_type FROM unitranksbox r JOIN unitprofile p ON p.title=r.title WHERE r.hp_last>=650 OR r.title LIKE 'AD7%' OR p.unit_type LIKE 'Fighter%' OR p.unit_type LIKE 'Bomber%' ORDER BY r.hp_last DESC LIMIT 30\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "partial",
+ "reason": "The candidate matches neither accepted ranking: it drops Portable Wall and Apex Mauler from the expected top 5 (though it names both with correct HP), and it keeps Tamed Mammoth Matriarch, which the alternative reading excludes, so Power Boat is missing and the order is shifted; it gets Matriarch 825, Monster Grouper 775 and Battleship 740 right against the primary answer, and 4 of 5 right against the alternative."
+}

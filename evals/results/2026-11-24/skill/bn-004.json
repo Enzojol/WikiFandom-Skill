@@ -1,0 +1,30 @@
+{
+ "id": "bn-004",
+ "wiki": "battlenations",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "In Battle Nations, how much gold does it cost to train a Sniper and a Riot Trooper? Which is more expensive?",
+ "answer": "Training costs are **Sniper: 8,000 gold** and **Riot Trooper: 2,250 gold**, so the Sniper is more expensive, at about 3.6 times the Riot Trooper's cost.\n\nTheir other training costs are 1,200 iron and 5 bars for the Sniper, and 335 iron for the Riot Trooper. Both are trained at the Barracks.\n\nSource: the \"BuildCost\" sections of the Sniper and Riot Trooper pages in the local Battle Nations Wiki KB, last synced 2026-11-24. The pages are https://battlenations.fandom.com/wiki/Sniper and https://battlenations.fandom.com/wiki/Riot_Trooper.",
+ "error": null,
+ "cost_usd": 0.0642847,
+ "turns": 8,
+ "seconds": 14.2,
+ "denials": [
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_01A8duyLbY5oUpxDdYrrHMvH",
+   "tool_input": {
+    "command": "cd /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb && uv run scripts/fandom_kb.py list"
+   }
+  },
+  {
+   "tool_name": "Bash",
+   "tool_use_id": "toolu_016Qzi66nKePtrHeYqbyHpX8",
+   "tool_input": {
+    "command": "K=/Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py; uv run $K search battlenations \"Sniper\" | head -20; uv run $K search battlenations \"Riot Trooper\" | head -20"
+   }
+  }
+ ],
+ "verdict": "correct",
+ "reason": "The candidate gives Sniper 8,000 gold and Riot Trooper 2,250 gold and correctly identifies the Sniper as more expensive, with only extra consistent detail."
+}

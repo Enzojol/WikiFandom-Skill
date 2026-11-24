@@ -1,0 +1,15 @@
+{
+ "id": "bn-002",
+ "wiki": "battlenations",
+ "kind": "lookup",
+ "arm": "web",
+ "question": "In Battle Nations, which building, at which level, is required to train the Sniper?",
+ "answer": "**Barracks, level 4.** That trains the Sharpshooter, which is the game's basic sniper unit and the closest match to \"Sniper\". It also needs player level 16.\n\nThe higher-tier sniper, the Marksman, needs Barracks level 6 and player level 28.\n\nI couldn't open the wiki pages directly, because Fandom returned an HTTP 402 error. These figures come from search-result summaries of the [Battle Nations Wiki Sharpshooter page](https://battlenations.fandom.com/wiki/Sharpshooter) and [Marksman page](https://battlenations.fandom.com/wiki/Marksman). I also didn't find a page named \"Sniper\", so treat the mapping from Sniper to Sharpshooter as likely, not confirmed.\n\nSources:\n- [Battle Nations Wiki: Sharpshooter](https://battlenations.fandom.com/wiki/Sharpshooter)\n- [Battle Nations Wiki: Marksman](https://battlenations.fandom.com/wiki/Marksman)",
+ "error": null,
+ "cost_usd": 0.0517239,
+ "turns": 6,
+ "seconds": 19.0,
+ "denials": [],
+ "verdict": "partial",
+ "reason": "The candidate names the right building (Barracks) but gives level 4 instead of the expected level 5, and it hedges on which unit the Sniper is."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "wf-007",
+ "wiki": "warframe",
+ "kind": "multi-hop",
+ "arm": "web",
+ "question": "In Warframe, which shotgun deals the most total damage per shot on its normal attack, and which Mastery Rank does it require?",
+ "answer": "**Tigris Prime** deals the most damage per shot on its normal attack, and it requires **Mastery Rank 13**.\n\nSource: the Warframe Wiki's Shotgun page (wiki.warframe.com/w/Shotgun). It lists Tigris Prime at about 1,716 average damage per shot, ahead of Exergis at about 1,672.\n\n- **What the figure includes:** It is the wiki's \"Avg Shot\" figure, which includes crit and multishot. The ranking could differ on raw base damage.\n- **What I didn't check:** I only read the first 100,000 of the page's roughly 150,000 characters. Shotguns without a Normal Attack row, such as Kohm and Astilla, were left out, and I didn't read the rest of the page to check for other entries.",
+ "error": null,
+ "cost_usd": 0.0243262,
+ "turns": 2,
+ "seconds": 35.4,
+ "denials": [],
+ "verdict": "wrong",
+ "reason": "The candidate names Tigris Prime (MR 13) instead of Exergis (1,620 damage, MR 8), which the grading notes explicitly mark as wrong."
+}

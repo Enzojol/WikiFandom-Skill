@@ -1,0 +1,38 @@
+{
+ "id": "bn-003",
+ "wiki": "battlenations",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "In Battle Nations, which has more HP at rank 6, the Heavy Tank or the War Mammoth, and what are both values?",
+ "answer": "**The War Mammoth has more HP at rank 6: 450, against 340 for the Heavy Tank.**\n\nThe figures come from the `UnitRanksBox` HP lists on the Battle Nations Wiki pages for [Heavy Tank](https://battlenations.fandom.com/wiki/Heavy_Tank) and [War Mammoth](https://battlenations.fandom.com/wiki/War_Mammoth), in the local KB synced 2026-11-24. Each unit has six ranks listed, and rank 6 is the last entry (Heavy Tank 225→340, War Mammoth 300→450).",
+ "error": null,
+ "cost_usd": 0.0957892,
+ "turns": 7,
+ "seconds": 14.4,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, url, hp_6, hp_last FROM units WHERE title IN ('Heavy Tank','War Mammoth')\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema battlenations"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql battlenations \"SELECT title, url, idx, hp FROM unitranksbox WHERE title LIKE '%Heavy Tank%' OR title LIKE '%Mammoth%'\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies the War Mammoth as having more HP at rank 6 and gives both values matching the expected answer (450 vs 340)."
+}

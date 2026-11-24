@@ -1,0 +1,38 @@
+{
+ "id": "wf-006",
+ "wiki": "warframe",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "In Warframe, which primary weapon with no Mastery Rank requirement (MR 0) deals the most damage per shot on its normal attack?",
+ "answer": "Checking the Warframe KB's weapon table showed a clear top result, so I'm giving the answer now.\n\n**Nataruk**, a primary bow, deals 450 damage per shot on its charged normal attack. Its mastery requirement is MR 0. The next highest MR 0 primaries are the Neutralizer (255) and the MK1-Strun and Snipetron (180 each).\n\nSource: the local Warframe KB, queried through the `weaponinfoboxautomatic` table (`attack1total`), which comes from the Warframe Wiki infobox at https://warframe.fandom.com/wiki/Nataruk. The KB was synced on 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.0512855,
+ "turns": 7,
+ "seconds": 17.7,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py schema warframe | grep -iE \"^  (weapon|[a-z_]*weapon)\" | cut -c1-1500"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql warframe \"SELECT title, slot, mastery, attack1total, attack1total_num, trigger FROM weaponinfoboxautomatic WHERE mastery=0 AND slot='Primary' ORDER BY attack1total_num DESC LIMIT 12\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate names the Nataruk with 450 damage per shot, matching both required facts in the expected answer."
+}

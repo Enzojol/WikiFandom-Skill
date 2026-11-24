@@ -1,0 +1,15 @@
+{
+ "id": "wf-003",
+ "wiki": "warframe",
+ "kind": "compare",
+ "arm": "skill",
+ "question": "In Warframe, compare the critical chance of the Soma Prime and the Braton Prime (normal attack).",
+ "answer": "**Soma Prime has the higher critical chance: 30%, against 12% for Braton Prime. That is 2.5 times as much.**\n\nI'm giving this from memory of the Warframe Wiki weapon stat pages, not from a lookup in this session, so I haven't verified it against the current wiki.",
+ "error": null,
+ "cost_usd": 0.0200262,
+ "turns": 1,
+ "seconds": 6.1,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate states Soma Prime 30% and Braton Prime 12%, matching both expected values; the unverified-source caveat doesn't change the facts."
+}

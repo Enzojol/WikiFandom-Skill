@@ -1,0 +1,30 @@
+{
+ "id": "bn-001",
+ "wiki": "battlenations",
+ "kind": "lookup",
+ "arm": "skill",
+ "question": "In Battle Nations, what is the Riot Trooper's HP at each rank?",
+ "answer": "**Riot Trooper HP by rank:** R1 60, R2 65, R3 70, R4 80, R5 85, R6 90.\n\nThe page's stats box has the HP and armor rows swapped. The row labeled `hp` reads 70/85/105/120/140/155. The 4.19.0 patch note lists those same numbers as the new armor values (R1 60→70 through R6 115→155). The infobox shows HP 90 and Armor 155, which matches the HP list above. I treated the row labeled `armor` (60/65/70/80/85/90) as the real HP. If you read the stats box literally, you'd get the armor numbers instead.\n\nSource: the Riot Trooper page on the Battle Nations wiki (https://battlenations.fandom.com/wiki/Riot_Trooper), read from the local KB synced 2026-11-24.",
+ "error": null,
+ "cost_usd": 0.047754000000000005,
+ "turns": 5,
+ "seconds": 12.5,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show battlenations \"Riot Trooper\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives the alternate accepted values 60, 65, 70, 80, 85, 90 and explicitly explains the page's HP/armor inconsistency, noting the literal stats-box reading would be 70/85/105/120/140/155."
+}

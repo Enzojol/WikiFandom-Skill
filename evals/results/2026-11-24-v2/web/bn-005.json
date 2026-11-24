@@ -1,0 +1,15 @@
+{
+ "id": "bn-005",
+ "wiki": "battlenations",
+ "kind": "aggregate",
+ "arm": "web",
+ "question": "In Battle Nations, which 5 player units have the highest HP at their maximum rank? Give the HP values.",
+ "answer": "I couldn't find a reliable answer, so I can't name the top 5 units.\n\n- **What I couldn't get:** The Battle Nations Fandom wiki returned HTTP 402 (Payment Required), so I couldn't read the unit pages. bn-db.com returned no table. The Miraheze wiki pages had no HP figures.\n- **Partial figures from search snippets:**\n  - Imperial Peacemonger: 360 HP at rank 6.\n  - Noble Champion: 395 HP.\n  - Total War Mammoth: 400 HP.\n  - Allied Mammoth Rider: 600 HP at max rank.\n  - Sandworm Drill: 500 HP, from a player guide.\n- **Why these don't answer it:** These are scattered snippets, not a ranked list. They don't cover every unit, so they can't give a trustworthy top 5.\n- **A figure I'm not using:** One snippet said bn-db.com lists values around 720 at rank 6. It tied them to critter and bigfoot-infected units, which aren't player units.\n\nTo get the real answer, I'd need to read the Fandom unit pages or bn-db.com directly, for example through the Fandom API or a browser export.\n\nSources:\n- [Battle Nations Wiki: Imperial Peacemonger](https://battlenations.fandom.com/wiki/Imperial_Peacemonger)\n- [Battle Nations Wiki: Noble Champion](https://battlenations.fandom.com/wiki/Noble_Champion)\n- [Battle Nations Wiki: Total War Mammoth](https://battlenations.fandom.com/wiki/Total_War_Mammoth)\n- [Battle Nations Wiki: Allied Mammoth Rider](https://battlenations.fandom.com/wiki/Allied_Mammoth_Rider)\n- [Steam guide: Battle Nations tips from a veteran player](https://steamcommunity.com/sharedfiles/filedetails/?id=268901882)\n- [bn-db.com units](https://bn-db.com/units)\n- [Battle Nations Miraheze: Stats](https://battlenations.miraheze.org/wiki/Stats)",
+ "error": null,
+ "cost_usd": 0.09912109999999999,
+ "turns": 11,
+ "seconds": 45.4,
+ "denials": [],
+ "verdict": "wrong",
+ "reason": "The candidate says it couldn't find the answer and names none of the expected top-5 units or HP values; the scattered snippet figures it lists don't match either the expected list or the alternative accepted ranking."
+}

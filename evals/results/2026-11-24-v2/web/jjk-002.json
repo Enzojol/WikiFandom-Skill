@@ -1,0 +1,15 @@
+{
+ "id": "jjk-002",
+ "wiki": "jujutsu-kaisen",
+ "kind": "lookup",
+ "arm": "web",
+ "question": "What is the title of Jujutsu Kaisen manga chapter 236, and which volume collects it?",
+ "answer": "**Chapter 236 is \"Heading South\" (南へ, *Minami e*), and Volume 26 collects it.** Some fan sites translate the title as \"Go South.\"\n\nSource: Wikipedia's [List of Jujutsu Kaisen chapters](https://en.wikipedia.org/wiki/List_of_Jujutsu_Kaisen_chapters). It lists chapter 236 as the last chapter of Volume 26 (chapters 228–236). The page was summarized by a tool, so the chapter list may not be exact.\n\nSources:\n- [List of Jujutsu Kaisen chapters – Wikipedia](https://en.wikipedia.org/wiki/List_of_Jujutsu_Kaisen_chapters)",
+ "error": null,
+ "cost_usd": 0.0444934,
+ "turns": 3,
+ "seconds": 21.5,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate gives the title \"Heading South\" and volume 26, which matches both required facts; the alternate translation and source notes are extra detail."
+}

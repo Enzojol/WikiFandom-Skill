@@ -1,0 +1,15 @@
+{
+ "id": "jjk-003",
+ "wiki": "jujutsu-kaisen",
+ "kind": "compare",
+ "arm": "web",
+ "question": "According to the Jujutsu Kaisen wiki, who is taller, Yuta Okkotsu or Megumi Fushiguro? Give both heights.",
+ "answer": "**Yuta Okkotsu is taller.** The wiki lists him at almost 180 cm (almost 5'11\"). Megumi Fushiguro is listed at 175 cm (5'9\").\n\nSource: the infobox figures for each character on the Jujutsu Kaisen Fandom wiki, as shown in search results. I couldn't open the wiki pages directly because they returned HTTP 402. Yuta's figure is \"almost 180 cm\", so it's approximate.\n\nSources:\n- [Yuta Okkotsu – Jujutsu Kaisen Wiki](https://jujutsu-kaisen.fandom.com/wiki/Yuta_Okkotsu)\n- [Megumi Fushiguro – Jujutsu Kaisen Wiki](https://jujutsu-kaisen.fandom.com/wiki/Megumi_Fushiguro)",
+ "error": null,
+ "cost_usd": 0.054016600000000005,
+ "turns": 6,
+ "seconds": 20.1,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies Yuta Okkotsu as taller and gives both heights matching the expected answer (almost 180 cm and 175 cm)."
+}

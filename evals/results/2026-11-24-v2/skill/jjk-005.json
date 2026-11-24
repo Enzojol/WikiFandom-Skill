@@ -1,0 +1,38 @@
+{
+ "id": "jjk-005",
+ "wiki": "jujutsu-kaisen",
+ "kind": "aggregate",
+ "arm": "skill",
+ "question": "How many episodes of the Jujutsu Kaisen anime use \"SPECIALZ\" as their opening theme?",
+ "answer": "**18 episodes**, Episodes 30 through 47 (Season 2, from the Hidden Inventory/Premature Death arc into the Shibuya Incident arc).\n\nSource: the KB's SpecialZ page (https://jujutsu-kaisen.fandom.com/wiki/SpecialZ) lists the starting episode as 30 and the ending episode as 47. A SQL check of the episode infoboxes found exactly 18 episodes (30–47) with \"SPECIALZ\" as their opening song.",
+ "error": null,
+ "cost_usd": 0.07941790000000001,
+ "turns": 7,
+ "seconds": 12.5,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py search jujutsu-kaisen \"SPECIALZ opening\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"SpecialZ\""
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py sql jujutsu-kaisen \"SELECT title, value FROM template_values WHERE field LIKE '%opening%' AND value LIKE '%SPECIALZ%' ORDER BY title\""
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate gives 18 episodes spanning episodes 30 to 47 in Season 2, matching the expected count and range."
+}

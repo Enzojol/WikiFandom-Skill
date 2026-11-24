@@ -1,0 +1,15 @@
+{
+ "id": "jjk-001",
+ "wiki": "jujutsu-kaisen",
+ "kind": "lookup",
+ "arm": "web",
+ "question": "According to the Jujutsu Kaisen wiki, what are Satoru Gojo's birthday and height?",
+ "answer": "**Satoru Gojo: born December 7 (listed as 1989), height 190 cm (about 6'3\").**\n\nI couldn't open the Jujutsu Kaisen Fandom wiki, because the fetch returned HTTP 402. These figures come from AniList and AniBase, which are secondary sources, so they may not match the wiki exactly. One AniBase edit lists 191 cm.\n\nSources:\n- [AniList: Satoru Gojou](https://anilist.co/character/127691/Satoru-Gojou)\n- [AniBase: Satoru Gojou](https://anibase.net/en/character/mL888/Satoru-Gojou)\n- [We Got This Covered: How Tall Is Gojo](https://wegotthiscovered.com/tv/how-tall-is-gojo-in-jujutsu-kaisen-answered/)",
+ "error": null,
+ "cost_usd": 0.0323417,
+ "turns": 3,
+ "seconds": 13.1,
+ "denials": [],
+ "verdict": "correct",
+ "reason": "The candidate gives the right birthday (December 7, 1989) and a height of 190 cm (noting 191 cm in one source), which matches the expected 'over 190 cm' figure even though it drops the 'over' qualifier."
+}

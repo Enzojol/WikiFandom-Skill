@@ -1,0 +1,30 @@
+{
+ "id": "jjk-007",
+ "wiki": "jujutsu-kaisen",
+ "kind": "multi-hop",
+ "arm": "skill",
+ "question": "In Jujutsu Kaisen, who is the Japanese voice actor of the main user of the Ten Shadows Technique?",
+ "answer": "**Yuma Uchida** (内田雄馬) voices Megumi Fushiguro, the main user of the Ten Shadows Technique. Natsumi Fujiwara voices him as a child.\n\nSource: the `voice` field of the Character Infobox on the Jujutsu Kaisen Wiki page for Megumi Fushiguro (https://jujutsu-kaisen.fandom.com/wiki/Megumi_Fushiguro), read from the local KB. I didn't query the KB to confirm that Megumi is the main Ten Shadows user. That part comes from what I already knew.",
+ "error": null,
+ "cost_usd": 0.04561389999999999,
+ "turns": 5,
+ "seconds": 12.9,
+ "denials": [],
+ "tools": [
+  {
+   "tool": "Skill",
+   "input": "fandom-kb:fandom-kb"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py list"
+  },
+  {
+   "tool": "Bash",
+   "input": "uv run /Users/enzojolivet/Code/Fandom-Skill/skills/fandom-kb/scripts/fandom_kb.py show jujutsu-kaisen \"Megumi Fushiguro\" --json"
+  }
+ ],
+ "used_kb": true,
+ "verdict": "correct",
+ "reason": "The candidate correctly identifies Yuma Uchida as the Japanese voice actor of Megumi Fushiguro, the main Ten Shadows Technique user; the extra child-voice detail does not contradict the expected answer."
+}
